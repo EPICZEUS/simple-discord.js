@@ -1,0 +1,22 @@
+{
+  "name": "simple-discord.js",
+  "version": "1.0.0",
+  "description": "A simple framework for the discord.js library.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EPICZEUS1/simple-discord.js.git"
+  },
+  "author": "EPICZEUS",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EPICZEUS1/simple-discord.js/issues"
+  },
+  "homepage": "https://github.com/EPICZEUS1/simple-discord.js#readme",
+  "dependencies": {
+    "discord.js": "^11.1.0"
+  }
+}
