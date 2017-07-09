@@ -258,8 +258,12 @@ class SimpleClient extends Client {
         try {
             await cmdFile.run(this, message, args);
         } catch (err) {
-            if (err.message === "cmdFile.run is not a function") throw new TypeError(`Simple-Discord: The command file ${command.name} does not have a run function.`);
-            else message.channel.send(`There was an error running the ${cmdFile.name} command. \`\`\`xl\n${err}\`\`\`This shouldn't happen.`);
+            if (err.message === "cmdFile.run is not a function") {
+                throw new TypeError(`Simple-Discord: The command file ${cmdFile.name} does not have a run function.`);
+            } else {
+                console.error(err);
+                message.channel.send(`There was an error running the ${cmdFile.name} command. \`\`\`xl\n${err}\`\`\`This shouldn't happen.`);
+            }
         }
     }
 
