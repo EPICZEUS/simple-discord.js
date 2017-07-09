@@ -1,6 +1,6 @@
 {
   "name": "simple-discord.js",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A simple framework for the discord.js library.",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,11 @@
     "url": "https://github.com/EPICZEUS1/simple-discord.js/issues"
   },
   "homepage": "https://github.com/EPICZEUS1/simple-discord.js#readme",
+  "engines": {
+    "node": ">=7.6.0"
+  },
   "dependencies": {
-    "discord.js": "^11.1.0"
+    "discord.js": "^11.1.0",
+    "nanoseconds": "^0.1.0"
   }
 }
