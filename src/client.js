@@ -50,11 +50,28 @@ class SimpleClient extends Client {
         _token = data.token;
 
         /**
-         * Boolean respresentation of if this bot is a selfbot.
-         * @member {boolean}
-         * @private
+         * @typedef {Object} Command
+         * @property {Function} run - The command code.
+         * @property {string} name - The name of the command.
+         * @property {string} type - The command group.
+         * @property {string} description - A brief description of the command
+         * @property {Array<Array<string, boolean>>} use - An array of command parameters, with a boolean representing if the parameter is required.
+         * @property {Array<string>} aliases - Alternative command name.
          */
-        this._selfbot = !!data.selfbot;
+
+        /**
+         * The commands for the bot.
+         * @type {Collection<string, Command>}
+         * @public
+         */
+        this.commands = new Collection();
+
+        /**
+         * The command aliases.
+         * @type {Collection<string, string>}
+         * @public
+         */
+        this.aliases = new Collection();
 
         /**
          * The command prefix.
@@ -69,6 +86,13 @@ class SimpleClient extends Client {
          * @public
          */
         this.suffix = !this._prefix && data.suffix ? data.suffix : null;
+
+        /**
+         * Boolean respresentation of if this bot is a selfbot.
+         * @member {boolean}
+         * @private
+         */
+        this._selfbot = !!data.selfbot;
 
         /**
          * The game to be set on ready.
@@ -268,31 +292,5 @@ class SimpleClient extends Client {
         if (path.isAbsolute(this._commandsDir)) throw new Error(`Simple-Discord: ${this._commandsDir} is an absolute path. Please provide a relative path.\n\nFor example, a relative path from ${path.join("C:", "samples")} to ${path.join("C:", "samples", "text.txt")} would be ${[".", "text.txt"].join(path.sep)}`);
     }
 }
-
-/**
- * @typedef {Object} Command
- * @property {Function} run - The command code.
- * @property {string} name - The name of the command.
- * @property {string} type - The command group.
- * @property {string} description - A brief description of the command
- * @property {Array<Array<string, boolean>>} use - An array of command parameters, with a boolean representing if the parameter is required.
- * @property {Array<string>} aliases - Alternative command name.
- */
-
-/* eslint-disable no-multi-spaces */
-
-/**
- * The commands for the bot.
- * @type {Collection<string, Command>}
- */
-SimpleClient.prototype.commands = new Collection();
-
-/**
- * The command aliases.
- * @type {Collection<string, string>}
- */
-SimpleClient.prototype.aliases  = new Collection();
-
-/* eslint-enable no-multi-spaces */
 
 module.exports = SimpleClient;
