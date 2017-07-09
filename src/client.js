@@ -209,7 +209,7 @@ class SimpleClient extends Client {
      * @method _processMessage
      * @private
      */
-    _processMessage(...params) {
+    async _processMessage(...params) {
         if (params.length === 2 && params[0].content === params[1].content) return;
 
         const message = params[params.length - 1];
@@ -256,10 +256,10 @@ class SimpleClient extends Client {
         }
 
         try {
-            cmdFile.run(this, message, args);
+            await cmdFile.run(this, message, args);
         } catch (err) {
             if (err.message === "cmdFile.run is not a function") throw new TypeError(`Simple-Discord: The command file ${command.name} does not have a run function.`);
-            else message.channel.send(`There was an error running the ${cmdFile.name} command. \`\`\`xl\n${err}\`\`\`This shouldn't happen. `);
+            else message.channel.send(`There was an error running the ${cmdFile.name} command. \`\`\`xl\n${err}\`\`\`This shouldn't happen.`);
         }
     }
 
