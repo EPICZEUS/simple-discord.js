@@ -152,7 +152,6 @@ class SimpleClient extends Client {
 
                 if (this._debug) console.log(`Loaded ${command.name}!`);
             }
-            console.log(`Loaded ${this.commands.size} commands!`);
         });
 
         return this;
@@ -218,15 +217,15 @@ class SimpleClient extends Client {
 
         let command, args;
 
-        if (this._prefix) {
-            if (!message.content.startsWith(this._prefix)) return;
+        if (this.prefix) {
+            if (!message.content.startsWith(this.prefix)) return;
 
-            [command = "", ...args] = message.content.slice(this._prefix.length).split(/ +/);
-        } else if (this._suffix) {
-            if (!message.content.endsWith(this._suffix)) return;
+            [command = "", ...args] = message.content.slice(this.prefix.length).split(/ +/);
+        } else if (this.suffix) {
+            if (!message.content.endsWith(this.suffix)) return;
 
             args = message.content.split(/ +/);
-            command = args.pop().slice(0, -this._suffix.length);
+            command = args.pop().slice(0, -this.suffix.length);
         }
         command = command.toLowerCase();
 
