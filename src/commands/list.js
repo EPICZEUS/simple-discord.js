@@ -36,3 +36,4 @@ exports.use = [
 exports.aliases = [
     "ls"
 ];
+exports.default = true;

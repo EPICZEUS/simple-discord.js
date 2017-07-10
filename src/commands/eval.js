@@ -14,6 +14,8 @@ exports.run = async (client, message, args) => {
 
     if (!code) return console.log("No code provided!");
 
+    console.log(code);
+
     const start = process.hrtime();
 
     try {
@@ -53,3 +55,4 @@ exports.aliases = [
     "run"
 ];
 exports.ownerOnly = true;
+exports.default = true;

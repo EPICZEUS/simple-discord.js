@@ -151,6 +151,8 @@ class SimpleClient extends Client {
                 if (command.aliases) for (const alias of command.aliases) this.aliases.set(alias, command.name);
 
                 if (this._debug) console.log(`Loaded ${command.name}!`);
+
+                delete require.cache[require.resolve(path.join(__dirname, "commands", file))];
             }
         });
 
@@ -183,6 +185,8 @@ class SimpleClient extends Client {
                     }
                 }
                 if (this._debug) console.log(`Loaded ${command.name}!`);
+
+                delete require.cache[require.resolve(path.join(dir, file))];
             }
             console.log(`Loaded ${this.commands.size} commands.`);
         });

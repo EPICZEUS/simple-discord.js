@@ -34,3 +34,4 @@ exports.use = [
 exports.aliases = [
     "help"
 ];
+exports.default = true;

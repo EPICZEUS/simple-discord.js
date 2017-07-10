@@ -10,3 +10,4 @@ exports.run = (client, message) => {
 exports.name = "ping";
 exports.type = "utility";
 exports.description = "Displays the overall ping.";
+exports.default = true;
