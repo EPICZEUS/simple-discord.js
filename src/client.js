@@ -277,12 +277,12 @@ class SimpleClient extends Client {
     _validateConfig() {
         if (!this.prefix && !this.suffix) throw new Error("Simple-Discord: A prefix or a suffix is required.");
 
-        if (this._prefix) {
-            if (typeof this._prefix !== "string") throw new TypeError("Simple-Discord: Your prefix must be a string.");
-            if (this._prefix.length > 4) throw new RangeError("Simple-Discord: Your prefix is too long. A maximum prefix length of 4 is enforced.");
+        if (this.prefix) {
+            if (typeof this.prefix !== "string") throw new TypeError("Simple-Discord: Your prefix must be a string.");
+            if (this.prefix.length > 4) throw new RangeError("Simple-Discord: Your prefix is too long. A maximum prefix length of 4 is enforced.");
         } else {
-            if (typeof this._suffix !== "string") throw new TypeError("Simple-Discord: Your suffix must be a string.");
-            if (this._suffix.length > 4) throw new RangeError("Simple-Discord: Your suffix is too long. A maximum suffix length of 4 is enforced.");
+            if (typeof this.suffix !== "string") throw new TypeError("Simple-Discord: Your suffix must be a string.");
+            if (this.suffix.length > 4) throw new RangeError("Simple-Discord: Your suffix is too long. A maximum suffix length of 4 is enforced.");
         }
 
         if (this._game && typeof this._game !== "string") throw new TypeError("Simple-Discord: The start game must be a string if one is desired.");
