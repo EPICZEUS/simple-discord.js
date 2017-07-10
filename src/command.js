@@ -94,7 +94,7 @@ class Command {
      * @param {Message} message - The discord.js message object.
      * @param {Array<any>} args - The command arguments.
      */
-    run(message, args) { // eslint-disable-line no-unused-vars
+    run(message, args) {
         throw new TypeError(`Simple-Discord - The command file ${this.name} does not have a run function.`);
     }
 }
