@@ -104,6 +104,13 @@ class SimpleClient extends Client {
         this._game = data.game || null;
 
         /**
+         * An array of owner ids for the bot.
+         * @member {Array<string>}
+         * @private
+         */
+        this._owners = data.owners;
+
+        /**
          * Boolean representation of if there should be extra logging.
          * @member {boolean}
          * @private
@@ -121,13 +128,6 @@ class SimpleClient extends Client {
 
         this.once('ready', () => {
             console.log(`Logged in as ${this.user.tag}!\nReady to serve in ${this.guilds.size} guild${this.guilds.size === 1 ? "" : "s"}!`);
-
-            /**
-             * An array of owner ids for the bot.
-             * @member {Array<string>}
-             * @private
-             */
-            this._owners = this._selfbot ? [this.user.id] : data.owners;
 
             this.user.setGame(this._game);
         });
@@ -290,6 +290,8 @@ class SimpleClient extends Client {
         if (!Array.isArray(this._owners)) throw new TypeError("Simple-Discord: options.owners must be an array.");
 
         if (this._owners.length < 1) throw new RangeError("Simple-Discord: You must specify at least one owner ID.");
+
+        if (this._selfbot && this._owners.length > 1) throw new RangeError("Simple-Discord: A selfbot can only have one owner.");
 
         if (!this._commandsDir) throw new Error("Simple-Discord: A commands directory is required.");
 
