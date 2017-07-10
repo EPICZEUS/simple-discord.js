@@ -47,6 +47,8 @@ class SimpleClient extends Client {
             data = options;
         }
 
+        console.log(data);
+
         _token = data.token;
 
         /**
