@@ -273,7 +273,7 @@ class SimpleClient extends Client {
      * @private
      */
     _validateConfig() {
-        if (!this._prefix && !this._suffix) throw new Error("Simple-Discord: A prefix or a suffix is required.");
+        if (!this.prefix && !this.suffix) throw new Error("Simple-Discord: A prefix or a suffix is required.");
 
         if (this._prefix) {
             if (typeof this._prefix !== "string") throw new TypeError("Simple-Discord: Your prefix must be a string.");
