@@ -50,28 +50,26 @@ class Command {
     /**
 	 * Keeps track if the user needs to be throttled, if necessary.
 	 * @param {string} user - ID of the user
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
     throttle(user) {
-        if(this.client._owners.includes(user)) {
-            return;
-        }
+        if (this.client._owners.includes(user)) return;
         
-        const throttling = (this._throttling.has(user) ? this._throttling.get(user) : { dateline: Date.now(), lastusage: 0, usages: 0 });
-        if(throttling.dateline + (this.throttling.duration * 1000) < Date.now()) {
+        const throttling = (this._throttling.has(user) ? this._throttling.get(user) : {dateline:Date.now(), lastusage:0, usages:0});
+        
+        if (throttling.dateline + (this.throttling.duration * 1000) < Date.now()) {
             throttling.dateline = Date.now();
             throttling.lastusage = 0;
             throttling.usages = 0;
         }
         
-        if((throttling.lastusage > 0 && (throttling.lastusage - throttling.dateline) / 1000) <= this.throttling.duration && throttling.usages >= this.throttling.usages) {
-            return true;
-        }
+        if ((throttling.lastusage > 0 && (throttling.lastusage - throttling.dateline) / 1000) <= this.throttling.duration && throttling.usages >= this.throttling.usages) return true;
         
         throttling.lastusage = Date.now();
         throttling.usages++;
         
         this._throttling.set(user, throttling);
+        
         return false;
     }
 
@@ -86,7 +84,7 @@ class Command {
         if (!this.name) throw new Error("Simple-Discord - Command name is required.");
         if (!this.type) throw new Error("Simple-Discord - Command type is required.");
         if (!this.description) throw new Error("Simple-Discord - Command description is required.");
-        if (options.throttling && (typeof options.throttling.usages !== 'number' || typeof options.throttling.duration !== 'number')) throw new Error('Simple-Discord - Command throttling contains invalid parameters.')
+        if (this.throttling && (typeof this.throttling.usages !== 'number' || typeof this.throttling.duration !== 'number')) throw new Error('Simple-Discord - Command throttling contains invalid parameters.');
     }
 
     /**

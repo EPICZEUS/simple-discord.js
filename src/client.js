@@ -250,9 +250,7 @@ class SimpleClient extends Client {
             if (missing.length) return message.channel.send(`To run this command, I need the following permissions: \`\`\`\n${missing.join(", ")}\n\`\`\``);
         }
         
-        if (cmdFile.throttle(message.author.id)) {
-            return message.channel.send(`To run this command, you need to cool down, you're going too fast.`);
-        }
+        if (cmdFile.throttle(message.author.id)) return message.channel.send(`To run this command, you need to cool down, you're going too fast.`);
 
         try {
             await cmdFile.run(message, args);
