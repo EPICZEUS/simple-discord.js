@@ -47,8 +47,6 @@ class SimpleClient extends Client {
             data = options;
         }
 
-        console.log(data);
-
         _token = data.token;
 
         /**
@@ -275,6 +273,10 @@ class SimpleClient extends Client {
      * @private
      */
     _validateConfig() {
+        if (!_token) throw new Error("Simple-Discord: Please provide a login token.");
+
+        if (typeof _token !== "string") throw new TypeError("Simple-Discord: Your token must be a string.");
+
         if (!this.prefix && !this.suffix) throw new Error("Simple-Discord: A prefix or a suffix is required.");
 
         if (this.prefix) {
