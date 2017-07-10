@@ -1,3 +1,6 @@
 const path = require("path");
 
-module.exports = require(path.join(__dirname, "src", "client"));
+module.exports = {
+    Client: require(path.join(__dirname, "src", "client")),
+    Command: require(path.join(__dirname, "src", "command"))
+};
