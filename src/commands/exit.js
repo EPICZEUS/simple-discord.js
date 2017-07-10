@@ -1,10 +1,21 @@
-exports.run = () => {
-    console.log("Bot shutting down.");
-    process.exit();
-};
+const Command = require("../command.js");
 
-exports.name = "restart";
-exports.type = "utility";
-exports.description = "Exits the process gracefully and lets pm2 turn it back on.";
-exports.ownerOnly = true;
-exports.default = true;
+class ExitCommand extends Command {
+    constructor(client) {
+        super(client, {
+            name: "restart",
+            type: "utility",
+            description: "Exits the process gracefully and lets pm2 turn it back on.",
+            ownerOnly: true
+        });
+
+        this.default = true;
+    }
+
+    run() {
+        console.log("Bot shutting down.");
+        process.exit();
+    }
+}
+
+module.exports = ExitCommand;

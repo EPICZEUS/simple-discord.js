@@ -36,11 +36,11 @@ class SimpleClient extends Client {
         if (options.configDir) {
             const dir = path.isAbsolute(options.configDir) ? options.configDir : path.join(process.cwd(), options.configDir);
 
-            if (!fs.existsSync(dir)) throw new Error(`Simple-Discord: No config found at ${dir}. Is this path correct?`);
+            if (!fs.existsSync(dir)) throw new Error(`Simple-Discord - No config found at ${dir}. Is this path correct?`);
 
             const {ext} = path.parse(dir);
 
-            if (ext && ext !== ".json") throw new TypeError("Simple-Discord: Config file extention type is expected to be json.");
+            if (ext && ext !== ".json") throw new TypeError("Simple-Discord - Config file extention type is expected to be json.");
 
             data = JSON.parse(fs.readFileSync(dir));
         } else {
@@ -48,16 +48,6 @@ class SimpleClient extends Client {
         }
 
         _token = data.token;
-
-        /**
-         * @typedef {Object} Command
-         * @property {Function} run - The command code.
-         * @property {string} name - The name of the command.
-         * @property {string} type - The command group.
-         * @property {string} description - A brief description of the command
-         * @property {Array<Array<string, boolean>>} use - An array of command parameters, with a boolean representing if the parameter is required.
-         * @property {Array<string>} aliases - Alternative command name.
-         */
 
         /**
          * The commands for the bot.
@@ -144,13 +134,14 @@ class SimpleClient extends Client {
             if (err) return console.error(err);
 
             for (const file of files) {
-                const command = require(path.join(__dirname, "commands", file));
+                const Command = require(path.join(__dirname, "commands", file));
+                const cmd = new Command(this);
 
-                this.commands.set(command.name, command);
+                this.commands.set(cmd.name, cmd);
 
-                if (command.aliases) for (const alias of command.aliases) this.aliases.set(alias, command.name);
+                if (cmd.aliases) for (const alias of cmd.aliases) this.aliases.set(alias, cmd.name);
 
-                if (this._debug) console.log(`Loaded ${command.name}!`);
+                if (this._debug) console.log(`Loaded ${cmd.name}!`);
 
                 delete require.cache[require.resolve(path.join(__dirname, "commands", file))];
             }
@@ -171,20 +162,21 @@ class SimpleClient extends Client {
             if (err) return console.error(err);
 
             for (const file of files) {
-                const command = require(path.join(dir, file));
+                const Command = require(path.join(dir, file));
+                const cmd = new Command(this);
 
-                this.commands.set(command.name, command);
+                this.commands.set(cmd.name, cmd);
 
-                if (command.aliases) {
-                    for (const alias of command.aliases) {
+                if (cmd.aliases) {
+                    for (const alias of cmd.aliases) {
                         if (this.aliases.has(alias)) {
-                            console.error(`Command ${command.name} has duplicate alias ${alias}!`);
+                            console.error(`Command ${cmd.name} has duplicate alias ${alias}!`);
                             continue;
                         }
-                        this.aliases.set(alias, command.name);
+                        this.aliases.set(alias, cmd.name);
                     }
                 }
-                if (this._debug) console.log(`Loaded ${command.name}!`);
+                if (this._debug) console.log(`Loaded ${cmd.name}!`);
 
                 delete require.cache[require.resolve(path.join(dir, file))];
             }
@@ -259,10 +251,10 @@ class SimpleClient extends Client {
         }
 
         try {
-            await cmdFile.run(this, message, args);
+            await cmdFile.run(message, args);
         } catch (err) {
             if (err.message === "cmdFile.run is not a function") {
-                throw new TypeError(`Simple-Discord: The command file ${cmdFile.name} does not have a run function.`);
+                throw new TypeError(`Simple-Discord - The command file ${cmdFile.name} does not have a run function.`);
             } else {
                 console.error(err);
                 message.channel.send(`There was an error running the ${cmdFile.name} command. \`\`\`xl\n${err}\`\`\`This shouldn't happen.`);
@@ -276,33 +268,33 @@ class SimpleClient extends Client {
      * @private
      */
     _validateConfig() {
-        if (!_token) throw new Error("Simple-Discord: Please provide a login token.");
+        if (!_token) throw new Error("Simple-Discord - Please provide a login token.");
 
-        if (typeof _token !== "string") throw new TypeError("Simple-Discord: Your token must be a string.");
+        if (typeof _token !== "string") throw new TypeError("Simple-Discord - Your token must be a string.");
 
-        if (!this.prefix && !this.suffix) throw new Error("Simple-Discord: A prefix or a suffix is required.");
+        if (!this.prefix && !this.suffix) throw new Error("Simple-Discord - A prefix or a suffix is required.");
 
         if (this.prefix) {
-            if (typeof this.prefix !== "string") throw new TypeError("Simple-Discord: Your prefix must be a string.");
-            if (this.prefix.length > 4) throw new RangeError("Simple-Discord: Your prefix is too long. A maximum prefix length of 4 is enforced.");
+            if (typeof this.prefix !== "string") throw new TypeError("Simple-Discord - Your prefix must be a string.");
+            if (this.prefix.length > 4) throw new RangeError("Simple-Discord - Your prefix is too long. A maximum prefix length of 4 is enforced.");
         } else {
-            if (typeof this.suffix !== "string") throw new TypeError("Simple-Discord: Your suffix must be a string.");
-            if (this.suffix.length > 4) throw new RangeError("Simple-Discord: Your suffix is too long. A maximum suffix length of 4 is enforced.");
+            if (typeof this.suffix !== "string") throw new TypeError("Simple-Discord - Your suffix must be a string.");
+            if (this.suffix.length > 4) throw new RangeError("Simple-Discord - Your suffix is too long. A maximum suffix length of 4 is enforced.");
         }
 
-        if (this._game && typeof this._game !== "string") throw new TypeError("Simple-Discord: The start game must be a string if one is desired.");
+        if (this._game && typeof this._game !== "string") throw new TypeError("Simple-Discord - The start game must be a string if one is desired.");
 
-        if (!Array.isArray(this._owners)) throw new TypeError("Simple-Discord: options.owners must be an array.");
+        if (!Array.isArray(this._owners)) throw new TypeError("Simple-Discord - options.owners must be an array.");
 
-        if (this._owners.length < 1) throw new RangeError("Simple-Discord: You must specify at least one owner ID.");
+        if (this._owners.length < 1) throw new RangeError("Simple-Discord - You must specify at least one owner ID.");
 
-        if (this._selfbot && this._owners.length > 1) throw new RangeError("Simple-Discord: A selfbot can only have one owner.");
+        if (this._selfbot && this._owners.length > 1) throw new RangeError("Simple-Discord - A selfbot can only have one owner.");
 
-        if (!this._commandsDir) throw new Error("Simple-Discord: A commands directory is required.");
+        if (!this._commandsDir) throw new Error("Simple-Discord - A commands directory is required.");
 
-        if (typeof this._commandsDir !== "string") throw new TypeError("Simple-Discord: The command directory must be a string.");
+        if (typeof this._commandsDir !== "string") throw new TypeError("Simple-Discord - The command directory must be a string.");
 
-        if (path.isAbsolute(this._commandsDir)) throw new Error(`Simple-Discord: ${this._commandsDir} is an absolute path. Please provide a relative path.\n\nFor example, a relative path from ${path.join("C:", "samples")} to ${path.join("C:", "samples", "text.txt")} would be ${[".", "text.txt"].join(path.sep)}`);
+        if (path.isAbsolute(this._commandsDir)) throw new Error(`Simple-Discord - ${this._commandsDir} is an absolute path. Please provide a relative path.\n\nFor example, a relative path from ${path.join("C:", "samples")} to ${path.join("C:", "samples", "text.txt")} would be ${[".", "text.txt"].join(path.sep)}`);
     }
 }
 

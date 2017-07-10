@@ -1,37 +1,48 @@
-exports.run = (client, message, args = [""]) => {
-    const cmdFile = client.commands.get(args[0].toLowerCase()) || client.commands.get(client.aliases.get(args[0].toLowerCase()));
+const Command = require("../command.js");
 
-    if (!cmdFile) return console.warn(`${args[0]} is not a valid command name or alias.`);
 
-    const howTo = cmdFile.use ? cmdFile.use.map(use => use[1] ? `<${use[0]}>` : `[${use[0]}]`).join(" ") : "";
-    const use = client.prefix ? `${client.prefix}${cmdFile.name} ${howTo}` : `${howTo ? `${howTo} ` : ""}${cmdFile.name}${client.suffix}`;
+class InfoCommand extends Command {
+    constructor(client) {
+        super(client, {
+            name: "info",
+            type: "general",
+            description: "Displays info about the specified command.",
+            use: [
+                ["command or alias", true]
+            ],
+            aliases: [
+                "help"
+            ]
+        });
 
-    (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(message.content, {embed: {
-        title:       cmdFile.name.replace(/^./, l => l.toUpperCase()),
-        description: cmdFile.description,
+        this.default = true;
+    }
 
-        fields: [{
-            name:  "Usage",
-            value: use
-        },
-        {
-            name:  "Aliases",
-            value: cmdFile.aliases ? cmdFile.aliases.join(", ") : "None"
-        }],
-        footer: {
-            text: "<> - required, [] - optional"
-        },
-        color: 0x4d68cc
-    }}).catch(console.error);
-};
+    run(message, args = [""]) {
+        const cmdFile = this.client.commands.get(args[0].toLowerCase()) || this.client.commands.get(this.client.aliases.get(args[0].toLowerCase()));
 
-exports.name = "info";
-exports.type = "general";
-exports.description = "Displays info about the specified command.";
-exports.use = [
-    ["command or alias", true]
-];
-exports.aliases = [
-    "help"
-];
-exports.default = true;
+        if (!cmdFile) return console.warn(`${args[0]} is not a valid command name or alias.`);
+
+        const howTo = cmdFile.use ? cmdFile.use.map(use => use[1] ? `<${use[0]}>` : `[${use[0]}]`).join(" ") : "";
+        const use = this.client.prefix ? `${this.client.prefix}${cmdFile.name} ${howTo}` : `${howTo ? `${howTo} ` : ""}${cmdFile.name}${this.client.suffix}`;
+
+        (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(message.content, {embed: {
+            title: cmdFile.name.replace(/^./, l => l.toUpperCase()),
+            description: cmdFile.description,
+            fields: [{
+                name: "Usage",
+                value: use
+            },
+            {
+                name: "Aliases",
+                value: cmdFile.aliases ? cmdFile.aliases.join(", ") : "None"
+            }],
+            footer: {
+                text: "<> - required, [] - optional"
+            },
+            color: 0x4d68cc
+        }}).catch(console.error);
+    }
+}
+
+module.exports = InfoCommand;

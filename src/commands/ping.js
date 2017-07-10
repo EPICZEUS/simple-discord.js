@@ -1,13 +1,24 @@
-exports.run = (client, message) => {
-    message.channel.send("Pinging...").then(msg => {
-        return msg.edit("Calculated Ping```\n" +
-            "Websocket:       " + Math.round(client.ping) + "ms\n" +
-            "Response Time:   " + (msg.createdTimestamp - message.createdTimestamp) + "ms\n```"
-        );
-    }).catch(console.error);
-};
+const Command = require("../command.js");
 
-exports.name = "ping";
-exports.type = "utility";
-exports.description = "Displays the overall ping.";
-exports.default = true;
+class PingCommand extends Command {
+    constructor(client) {
+        super(client, {
+            name: "ping",
+            type: "utility",
+            description: "Displays the overall ping."
+        });
+
+        this.default = true;
+    }
+
+    run(message) {
+        message.channel.send("Pinging...").then(msg => {
+            return msg.edit("Calculated Ping```\n" +
+                "Websocket:       " + Math.round(this.client.ping) + "ms\n" +
+                "Response Time:   " + (msg.createdTimestamp - message.createdTimestamp) + "ms\n```"
+            );
+        }).catch(console.error);
+    }
+}
+
+module.exports = PingCommand;

@@ -1,21 +1,34 @@
-exports.run = (bot, message, args) => {
-    if (!args.length) return console.error("Must specify at least one command!");
+const Command = require("../command.js");
 
-    for (const cmd of args) {
-        const cmdFile = bot.commands.get(cmd.toLowerCase()) || bot.commands.get(bot.aliases.get(cmd.toLowerCase()));
+class DelCommand extends Command {
+    constructor(client) {
+        super(client, {
+            name: "delcmd",
+            type: "utility",
 
-        if (!cmdFile || cmdFile.default) continue;
+            use: [
+                [ "command name or names", true ]
+            ],
 
-        bot.commands.delete(cmdFile.name.toLowerCase());
+            description: "Deletes a specified command or group of commands."
+        });
 
-        if (cmdFile.aliases) for (const alias of cmdFile.aliases) bot.aliases.delete(alias);
+        this.default = true;
     }
-};
 
-exports.name = "delcmd";
-exports.type = "utility";
-exports.description = "Deletes a specified command or group of commands.";
-exports.use = [
-    [ "command name or names", true ]
-];
-exports.default = true;
+    run(message, args) {
+        if (!args.length) return console.error("Must specify at least one command!");
+
+        for (const cmd of args) {
+            const cmdFile = this.client.commands.get(cmd.toLowerCase()) || this.client.commands.get(this.client.aliases.get(cmd.toLowerCase()));
+
+            if (!cmdFile || cmdFile.default) continue;
+
+            this.client.commands.delete(cmdFile.name.toLowerCase());
+
+            if (cmdFile.aliases) for (const alias of cmdFile.aliases) this.client.aliases.delete(alias);
+        }
+    }
+}
+
+module.exports = DelCommand;

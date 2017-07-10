@@ -84,9 +84,7 @@
                 },
                 "multiLine": {
                     "beforeColon": false,
-                    "afterColon": true,
-                    "align": "value",
-                    "mode": "minimum"
+                    "afterColon": true
                 }
             }
         ],
