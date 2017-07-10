@@ -21,6 +21,5 @@
   },
   "dependencies": {
     "discord.js": "^11.1.0",
-    "nanoseconds": "^0.1.0"
   }
 }

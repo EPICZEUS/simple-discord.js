@@ -1,7 +1,6 @@
 const Discord = require("discord.js");
 const Command = require("../command.js");
 const {inspect} = require("util");
-const nano = require("nanoseconds");
 
 const embed = new Discord.RichEmbed();
 
@@ -40,7 +39,8 @@ class EvalCommand extends Command {
 
         try {
             let done = await eval(code);
-            const end = nano(process.hrtime(start));
+            const hrDiff = process.hrtime(start);
+            const end = (hrDiff[0] > 0 ? (hrDiff[0] * 1000000000) : 0) + hrDiff[1];
 
             console.log(done);
 
@@ -53,7 +53,8 @@ class EvalCommand extends Command {
 
             return (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`**INPUT:** \`${code}\``, {embed});
         } catch (err) {
-            const end = nano(process.hrtime(start));
+            const hrDiff = process.hrtime(start);
+            const end = (hrDiff[0] > 0 ? (hrDiff[0] * 1000000000) : 0) + hrDiff[1];
 
             console.error(err);
             embed.setTitle("<:panicbasket:267397363956580352>ERROR<:panicbasket:267397363956580352>")
