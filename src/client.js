@@ -251,6 +251,8 @@ class SimpleClient extends Client {
             if (missing.length) return message.channel.send(`To run this command, I need the following permissions: \`\`\`\n${missing.join(", ")}\n\`\`\``);
         }
 
+        if (cmdFile.throttle(message.author.id)) return message.channel.send(`To run this command, you need to cool down, you're going too fast.`);
+
         const minArgCount = cmdFile.use.filter(a => a[1]).length;
 
         if (args.length < minArgCount) message.channel.send(`The command ${cmdFile.name} has a minimum argument count of ${minArgCount}. Please provide proper arguments.`);
@@ -258,12 +260,8 @@ class SimpleClient extends Client {
         try {
             await cmdFile.run(message, args);
         } catch (err) {
-            if (err.message === "cmdFile.run is not a function") {
-                throw new TypeError(`Simple-Discord - The command file ${cmdFile.name} does not have a run function.`);
-            } else {
-                console.error(err);
-                message.channel.send(`There was an error running the ${cmdFile.name} command. \`\`\`xl\n${err}\`\`\`This shouldn't happen.`);
-            }
+            console.error(err);
+            message.channel.send(`There was an error running the ${cmdFile.name} command. \`\`\`xl\n${err}\`\`\`This shouldn't happen.`);
         }
     }
 
