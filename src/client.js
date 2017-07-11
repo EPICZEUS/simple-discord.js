@@ -239,10 +239,11 @@ class SimpleClient extends Client {
             const perms = cmdFile.permissions.list.filter(validatePermissions);
             let missing = [];
 
-            for (const perm of perms) if (!message.member.hasPermission(perm)) missing.push(perm);
+            if (!this._selfbot) {
+                for (const perm of perms) if (!message.member.hasPermission(perm)) missing.push(perm);
 
-            if (missing.length) return message.channel.send(`To run this command, you need the following permissions: \`\`\`\n${missing.join(", ")}\n\`\`\``);
-
+                if (missing.length) return message.channel.send(`To run this command, you need the following permissions: \`\`\`\n${missing.join(", ")}\n\`\`\``);
+            }
             missing = [];
 
             for (const perm of perms) if (!message.guild.me.hasPermission(perm)) missing.push(perm);
