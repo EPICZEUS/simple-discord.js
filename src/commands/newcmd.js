@@ -26,17 +26,19 @@ class NewCommand extends Command {
 
             if (!fs.existsSync(fileDir)) continue;
 
-            const cmdFile = require(fileDir);
+            const Command = require(fileDir);
 
-            this.client.commands.set(cmdFile.name.toLowerCase(), cmdFile);
+            const command = new Command(this.client);
 
-            if (cmdFile.aliases) {
-                for (const alias of cmdFile.aliases) {
+            this.client.commands.set(command.name.toLowerCase(), command);
+
+            if (command.aliases) {
+                for (const alias of command.aliases) {
                     if (this.client.aliases.has(alias)) {
-                        console.error(`Command ${cmdFile.name} has duplicate alias ${alias}!`);
+                        console.error(`Command ${command.name} has duplicate alias ${alias}!`);
                         continue;
                     }
-                    this.client.aliases.set(alias, cmdFile.name.toLowerCase());
+                    this.client.aliases.set(alias, command.name.toLowerCase());
                 }
             }
 

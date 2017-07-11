@@ -5,11 +5,9 @@ class DelCommand extends Command {
         super(client, {
             name: "delcmd",
             type: "utility",
-
             use: [
                 [ "command name or names", true ]
             ],
-
             description: "Deletes a specified command or group of commands."
         });
 

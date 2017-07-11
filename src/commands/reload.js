@@ -8,9 +8,11 @@ function reload(client, name) {
 
     try {
         delete require.cache[require.resolve(dir)];
-        const cmdFile = require(dir);
+        const Command = require(dir);
 
-        client.commands.set(name, cmdFile);
+        const command = new Command(client);
+
+        client.commands.set(name, command);
 
         console.info(`Reloaded ${name} successfully!`);
         success++;
@@ -49,11 +51,11 @@ class ReloadCommand extends Command {
             });
         } else if (args.some(a => this.client.commands.has(a) || this.client.commands.has(this.client.aliases.get(a)))) {
             for (const cmd of args) {
-                const cmdFile = this.client.commands.get(cmd) || this.client.commands.get(this.client.aliases.get(cmd));
+                const command = this.client.commands.get(cmd) || this.client.commands.get(this.client.aliases.get(cmd));
                 
-                if (!cmdFile || cmdFile.default) continue;
+                if (!command || command.default) continue;
 
-                reload(this.client, cmdFile.name.toLowerCase());
+                reload(this.client, command.name.toLowerCase());
             }
         }
         message.channel.send(`Reloaded ${success} command${success === 1 ? "" : "s"}, ${failure} failed.`);
