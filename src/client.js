@@ -251,6 +251,10 @@ class SimpleClient extends Client {
             if (missing.length) return message.channel.send(`To run this command, I need the following permissions: \`\`\`\n${missing.join(", ")}\n\`\`\``);
         }
 
+        const minArgCount = cmdFile.use.filter(a => a[1]).length;
+
+        if (args.length < minArgCount) message.channel.send(`The command ${cmdFile.name} has a minimum argument count of ${minArgCount}. Please provide proper arguments.`);
+
         try {
             await cmdFile.run(message, args);
         } catch (err) {
