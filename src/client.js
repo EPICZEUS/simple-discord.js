@@ -255,7 +255,7 @@ class SimpleClient extends Client {
 
         const minArgCount = cmdFile.use ? cmdFile.use.filter(a => a[1]).length : 0;
 
-        if (args.length < minArgCount) message.channel.send(`The command ${cmdFile.name} has a minimum argument count of ${minArgCount}. Please provide proper arguments.`);
+        if (args.length < minArgCount) return message.channel.send(`The command ${cmdFile.name} has a minimum argument count of ${minArgCount}. Please provide proper arguments.`);
 
         try {
             await cmdFile.run(message, args);
