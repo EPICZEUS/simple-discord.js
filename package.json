@@ -1,6 +1,6 @@
 {
   "name": "simple-discord.js",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "description": "A simple framework for the discord.js library.",
   "main": "index.js",
   "scripts": {
