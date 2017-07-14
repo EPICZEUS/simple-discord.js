@@ -87,7 +87,7 @@ class Command {
         if (this.aliases && !Array.isArray(this.aliases)) throw new TypeError("Simple-Discord - Command aliases must be in an array.");
         if (this.use && !Array.isArray(this.use)) throw new TypeError("Simple-Discord - Command use must be an array.");
         if (this.throttling && (typeof this.throttling.usages !== 'number' || typeof this.throttling.duration !== 'number')) throw new Error('Simple-Discord - Command throttling contains invalid parameters.');
-        if (this.throttling && (this.throttling.usages === 0 || this.throttling.duration === 0)) trow new Error('Simple-Discord - Command throttling parameters cannot be zero.');
+        if (this.throttling && (this.throttling.usages === 0 || this.throttling.duration === 0)) throw new Error('Simple-Discord - Command throttling parameters cannot be zero.');
     }
 
     /**
