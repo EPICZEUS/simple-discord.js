@@ -53,7 +53,7 @@ class Command {
      * @returns {boolean}
      */
     throttle(user) {
-        if (this.client._owners.includes(user) || !this.throttling || this.throttling.duration === 0 || this.throttling.usages === 0) return false;
+        if (this.client._owners.includes(user) || !this.throttling) return false;
         
         const throttling = (this._throttling.has(user) ? this._throttling.get(user) : {dateline:Date.now(), lastusage:0, usages:0});
         
@@ -87,6 +87,7 @@ class Command {
         if (this.aliases && !Array.isArray(this.aliases)) throw new TypeError("Simple-Discord - Command aliases must be in an array.");
         if (this.use && !Array.isArray(this.use)) throw new TypeError("Simple-Discord - Command use must be an array.");
         if (this.throttling && (typeof this.throttling.usages !== 'number' || typeof this.throttling.duration !== 'number')) throw new Error('Simple-Discord - Command throttling contains invalid parameters.');
+        if (this.throttling && (this.throttling.usages === 0 || this.throttling.duration === 0)) trow new Error('Simple-Discord - Command throttling parameters cannot be zero.');
     }
 
     /**
