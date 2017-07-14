@@ -23,7 +23,7 @@ class SimpleClient extends Client {
      */
 
     /**
-     * @class
+     * @class SimpleClient
      * @classdesc The SimpleDiscord client.
      * @extends Client
      * @param {SimpleClientOptions} options - The client options.
@@ -277,13 +277,8 @@ class SimpleClient extends Client {
 
         if (!this.prefix && !this.suffix) throw new Error("Simple-Discord - A prefix or a suffix is required.");
 
-        if (this.prefix) {
-            if (typeof this.prefix !== "string") throw new TypeError("Simple-Discord - Your prefix must be a string.");
-            if (this.prefix.length > 4) throw new RangeError("Simple-Discord - Your prefix is too long. A maximum prefix length of 4 is enforced.");
-        } else {
-            if (typeof this.suffix !== "string") throw new TypeError("Simple-Discord - Your suffix must be a string.");
-            if (this.suffix.length > 4) throw new RangeError("Simple-Discord - Your suffix is too long. A maximum suffix length of 4 is enforced.");
-        }
+        if (this.prefix && typeof this.prefix !== "string") throw new TypeError("Simple-Discord - Your prefix must be a string.");
+        else if (typeof this.suffix !== "string") throw new TypeError("Simple-Discord - Your suffix must be a string.");
 
         if (this._game && typeof this._game !== "string") throw new TypeError("Simple-Discord - The start game must be a string if one is desired.");
 

@@ -20,7 +20,7 @@ class Command {
  	  */
 
     /**
-     * @class
+     * @class Command
      * @classdesc A SimpleDiscord command.
      * @param {SimpleClient} client - The client object.
      * @param {CommandOptions} options - Options for the commands.
