@@ -13,11 +13,11 @@ class Command {
      * @property {ThrottlingOptions} throttling - Options for throttling usages for the command.
      */
      
-     /**
-  	  * @typedef {Object} ThrottlingOptions
- 	  * @property {number} usages - Maximum number of usages of the command allowed in the specified duration.
- 	  * @property {number} duration - Amount of time to count the usages of the command within (in seconds).
- 	  */
+    /**
+     * @typedef {Object} ThrottlingOptions
+     * @property {number} usages - Maximum number of usages of the command allowed in the specified duration.
+     * @property {number} duration - Amount of time to count the usages of the command within (in seconds).
+     */
 
     /**
      * @class Command
@@ -48,12 +48,12 @@ class Command {
     }
     
     /**
-	 * Keeps track if the user needs to be throttled, if necessary.
-	 * @param {string} user - ID of the user
-	 * @returns {boolean}
-	 */
+     * Keeps track if the user needs to be throttled, if necessary.
+     * @param {string} user - ID of the user
+     * @returns {boolean}
+     */
     throttle(user) {
-        if (this.client._owners.includes(user)) return;
+        if (this.client._owners.includes(user)) return false;
         
         const throttling = (this._throttling.has(user) ? this._throttling.get(user) : {dateline:Date.now(), lastusage:0, usages:0});
         
