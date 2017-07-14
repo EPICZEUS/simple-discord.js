@@ -278,7 +278,7 @@ class SimpleClient extends Client {
         if (!this.prefix && !this.suffix) throw new Error("Simple-Discord - A prefix or a suffix is required.");
 
         if (this.prefix && typeof this.prefix !== "string") throw new TypeError("Simple-Discord - Your prefix must be a string.");
-        else if (typeof this.suffix !== "string") throw new TypeError("Simple-Discord - Your suffix must be a string.");
+        if (this.suffix && typeof this.suffix !== "string") throw new TypeError("Simple-Discord - Your suffix must be a string.");
 
         if (this._game && typeof this._game !== "string") throw new TypeError("Simple-Discord - The start game must be a string if one is desired.");
 
