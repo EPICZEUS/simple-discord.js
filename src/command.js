@@ -84,6 +84,8 @@ class Command {
         if (!this.name) throw new Error("Simple-Discord - Command name is required.");
         if (!this.type) throw new Error("Simple-Discord - Command type is required.");
         if (!this.description) throw new Error("Simple-Discord - Command description is required.");
+        if (this.aliases && !Array.isArray(this.aliases)) throw new TypeError("Simple-Discord - Command aliases must be in an array.");
+        if (this.use && !Array.isArray(this.use)) throw new TypeError("Simple-Discord - Command use must be an array.");
         if (this.throttling && (typeof this.throttling.usages !== 'number' || typeof this.throttling.duration !== 'number')) throw new Error('Simple-Discord - Command throttling contains invalid parameters.');
     }
 

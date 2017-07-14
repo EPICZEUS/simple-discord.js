@@ -253,7 +253,7 @@ class SimpleClient extends Client {
 
         if (cmdFile.throttle(message.author.id)) return message.channel.send(`To run this command, you need to cool down, you're going too fast.`);
 
-        const minArgCount = cmdFile.use.filter(a => a[1]).length;
+        const minArgCount = cmdFile.use ? cmdFile.use.filter(a => a[1]).length : 0;
 
         if (args.length < minArgCount) message.channel.send(`The command ${cmdFile.name} has a minimum argument count of ${minArgCount}. Please provide proper arguments.`);
 
