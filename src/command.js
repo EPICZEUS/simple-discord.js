@@ -53,7 +53,7 @@ class Command {
      * @returns {boolean}
      */
     throttle(user) {
-        if (this.client._owners.includes(user)) return false;
+        if (this.client._owners.includes(user) || !this.throttling || this.throttling.duration === 0 || this.throttling.usages === 0) return false;
         
         const throttling = (this._throttling.has(user) ? this._throttling.get(user) : {dateline:Date.now(), lastusage:0, usages:0});
         
