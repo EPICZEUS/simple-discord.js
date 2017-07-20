@@ -197,16 +197,20 @@ class SimpleClient extends Client {
         });
     }
 
-    [inspect.custom]() {
+    /**
+     * @private
+     * @returns {string}
+     */
+    [inspect.custom](depth) {
         const user = this.user ? `${this.user.tag} (ID: ${this.user.id})` : null;
 
-        return `SimpleClient {
+        return depth ? `SimpleClient {
     User: ${user},
     Guilds: { ${this.guilds.size} },
     Channels: { ${this.channels.size} },
     Users: { ${this.users.size} },
     Commands: { ${this.commands.size} }
-}`;
+}` : "[SimpleClient]";
     }
 
     /**
@@ -278,6 +282,7 @@ class SimpleClient extends Client {
     /**
      * Validates the provided configuration options.
      * @method _validateConfig
+     * @throws {Error|TypeError|RangeError}
      * @private
      */
     _validateConfig() {

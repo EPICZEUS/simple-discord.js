@@ -39,7 +39,7 @@ class EvalCommand extends Command {
         const start = process.hrtime();
 
         try {
-            let done = await script.runInNewContext({client:this.client, message}, {timeout:5000});
+            let done = await script.runInNewContext({client:this.client, message, require}, {timeout:5000});
             const hrDiff = process.hrtime(start);
             const end = (hrDiff[0] > 0 ? (hrDiff[0] * 1000000000) : 0) + hrDiff[1];
 
