@@ -1,6 +1,8 @@
 const {Client, Collection, Permissions} = require("discord.js");
+const {inspect, promisify} = require("util");
+const fs = require("fs");
 const path = require("path");
-const fs   = require("fs");
+const readdir = promisify(fs.readdir);
 
 let _token;
 
@@ -130,9 +132,7 @@ class SimpleClient extends Client {
      * @returns {SimpleClient}
      */
     loadDefaults() {
-        fs.readdir(path.join(__dirname, "commands"), (err, files) => {
-            if (err) return console.error(err);
-
+        readdir(path.join(__dirname, "commands")).then(files => {
             for (const file of files) {
                 const Command = require(path.join(__dirname, "commands", file));
                 const cmd = new Command(this);
@@ -145,7 +145,7 @@ class SimpleClient extends Client {
 
                 delete require.cache[require.resolve(path.join(__dirname, "commands", file))];
             }
-        });
+        }).catch(console.error);
 
         return this;
     }
@@ -158,9 +158,7 @@ class SimpleClient extends Client {
     loadCommands() {
         const dir = path.join(process.cwd(), this._commandsDir);
 
-        fs.readdir(dir, (err, files) => {
-            if (err) return console.error(err);
-
+        readdir(dir).then(files => {
             for (const file of files) {
                 const Command = require(path.join(dir, file));
                 const cmd = new Command(this);
@@ -181,7 +179,7 @@ class SimpleClient extends Client {
                 delete require.cache[require.resolve(path.join(dir, file))];
             }
             console.log(`Loaded ${this.commands.size} commands.`);
-        });
+        }).catch(console.error);
 
         return this;
     }
@@ -197,6 +195,18 @@ class SimpleClient extends Client {
             console.error(err, "\nThere was an error on login.", "\nPlease validate your token.");
             process.exit(1);
         });
+    }
+
+    [inspect.custom]() {
+        const user = this.user ? `${this.user.tag} (ID: ${this.user.id})` : null;
+
+        return `SimpleClient {
+    User: ${user},
+    Guilds: { ${this.guilds.size} },
+    Channels: { ${this.channels.size} },
+    Users: { ${this.users.size} },
+    Commands: { ${this.commands.size} }
+}`;
     }
 
     /**

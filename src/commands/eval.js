@@ -1,8 +1,7 @@
 const Discord = require("discord.js");
 const Command = require("../command.js");
+const vm = require("vm");
 const {inspect} = require("util");
-
-const embed = new Discord.RichEmbed();
 
 function clean(str, reg) {
     return typeof str === "string" ? str.replace(/[`@]/g, "$&\u200b").replace(reg, "[SECRET]") : str;
@@ -27,18 +26,20 @@ class EvalCommand extends Command {
     }
 
     async run(message, args) {
-        const client = this.client;
+        const embed = new Discord.RichEmbed();
         const code = args.join(" ");
-        const tokenReg = new RegExp(`${client.token}|${client.token.split("").reverse().join("")}`.replace(/\./g, "\\."), "g");
+        const tokenReg = new RegExp(`${this.client.token}|${this.client.token.split("").reverse().join("")}`.replace(/\./g, "\\."), "g");
 
         if (!code) return console.log("No code provided!");
 
         console.log(code);
 
+        const script = new vm.Script(code);
+
         const start = process.hrtime();
 
         try {
-            let done = await eval(code);
+            let done = await script.runInNewContext({client:this.client, message}, {timeout:5000});
             const hrDiff = process.hrtime(start);
             const end = (hrDiff[0] > 0 ? (hrDiff[0] * 1000000000) : 0) + hrDiff[1];
 
@@ -51,7 +52,7 @@ class EvalCommand extends Command {
                 .setFooter(`Runtime: ${(end / 1000).toFixed(3)}\u03bcs`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png")
                 .setColor(24120);
 
-            return (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`**INPUT:** \`${code}\``, {embed});
+            return (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`**INPUT:** \`${code}\``, {embed});
         } catch (err) {
             const hrDiff = process.hrtime(start);
             const end = (hrDiff[0] > 0 ? (hrDiff[0] * 1000000000) : 0) + hrDiff[1];
@@ -62,7 +63,7 @@ class EvalCommand extends Command {
                 .setFooter(`Runtime: ${(end / 1000).toFixed(3)}\u03bcs`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png")
                 .setColor(13379110);
 
-            (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`**INPUT:** \`${code}\``, {embed}).catch(console.error);
+            (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`**INPUT:** \`${code}\``, {embed}).catch(console.error);
         }
     }
 }
