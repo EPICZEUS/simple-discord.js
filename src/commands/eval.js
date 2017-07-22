@@ -21,7 +21,7 @@ class EvalCommand extends Command {
             ownerOnly: true
         });
 
-        this.endings = ["\u03bc", "ms", "s"];
+        this.endings = ["\u03bcs", "ms", "s"];
         this.default = true;
     }
 
