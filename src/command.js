@@ -26,15 +26,64 @@ class Command {
      * @param {CommandOptions} options - Options for the commands.
      */
     constructor(client, options) {
+        /**
+         * @type {SimpleClient}
+         * @public
+         */
         this.client = client;
+        
+        /**
+         * @type {string}
+         * @public
+         */
         this.name = options.name;
+        
+        /**
+         * @type {string}
+         * @public
+         */
         this.type = options.type;
+        
+        /**
+         * @type {string}
+         * @public
+         */
         this.description = options.description;
+        
+        /**
+         * @type {Array<Array<string, boolean>>}
+         * @public
+         */
         this.use = options.use;
+        
+        /**
+         * @type {Array<string>}
+         * @public
+         */
         this.aliases = options.aliases;
+        
+        /**
+         * @type {Array<PermissionResolvable>}
+         * @public
+         */
         this.permissions = options.permissions;
+        
+        /**
+         * @type {boolean}
+         * @public
+         */
         this.guildOnly = !!options.guildOnly;
+        
+        /**
+         * @type {boolean}
+         * @public
+         */
         this.ownerOnly = !!options.ownerOnly;
+        
+        /**
+         * @type {ThrottlingOptions}
+         * @public
+         */
         this.throttling = options.throttling;
 
         this._validateCommand();
@@ -49,13 +98,14 @@ class Command {
     
     /**
      * Keeps track if the user needs to be throttled, if necessary.
+     * @method throttle
      * @param {string} user - ID of the user
      * @returns {boolean}
      */
     throttle(user) {
         if (this.client._owners.includes(user) || !this.throttling) return false;
         
-        const throttling = (this._throttling.has(user) ? this._throttling.get(user) : {dateline:Date.now(), lastusage:0, usages:0});
+        const throttling = this._throttling.get(user) || {dateline:Date.now(), lastusage:0, usages:0};
         
         if (throttling.dateline + (this.throttling.duration * 1000) < Date.now()) {
             throttling.dateline = Date.now();
@@ -75,12 +125,11 @@ class Command {
 
     /**
      * Verifies the command configuration is valid.
-     * @function _validateCommand
+     * @method _validateCommand
      * @private
      */
     _validateCommand() {
         if (!(this.client instanceof SimpleClient)) throw new TypeError("Simple-Discord - Command constructor parameter client must be the SimpleDiscord client.");
-
         if (!this.name) throw new Error("Simple-Discord - Command name is required.");
         if (!this.type) throw new Error("Simple-Discord - Command type is required.");
         if (!this.description) throw new Error("Simple-Discord - Command description is required.");
@@ -92,10 +141,10 @@ class Command {
 
     /**
      * The command to be run.
-     * @function run
+     * @method run
      * @abstract
      * @param {Message} message - The discord.js message object.
-     * @param {Array<any>} args - The command arguments.
+     * @param {Array<string>} args - The command arguments.
      */
     run(message, args) { // eslint-disable-line no-unused-vars
         throw new TypeError(`Simple-Discord - The command file ${this.name} does not have a run function.`);

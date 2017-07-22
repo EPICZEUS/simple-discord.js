@@ -22,6 +22,7 @@ class EvalCommand extends Command {
             ownerOnly: true
         });
 
+        this.endings = ["\u037e", "ms", "s"];
         this.default = true;
     }
 
@@ -41,7 +42,14 @@ class EvalCommand extends Command {
         try {
             let done = await script.runInNewContext({client:this.client, message, require}, {timeout:5000});
             const hrDiff = process.hrtime(start);
-            const end = (hrDiff[0] > 0 ? (hrDiff[0] * 1000000000) : 0) + hrDiff[1];
+            let end = (hrDiff[0] > 0 ? (hrDiff[0] * 1000000000) : 0) + hrDiff[1];
+
+            let ending  = this.endings[0], i = 0;
+            
+            while (this.endings[i] && end > 1000) {
+                end /= 1000;
+                ending = this.endings[i++];
+            }
 
             console.log(done);
 
@@ -49,18 +57,24 @@ class EvalCommand extends Command {
 
             embed.setTitle("OUTPUT")
                 .setDescription((done.length < 900 ? `\`\`\`js\n${clean(done, tokenReg)}\`\`\`` : "```\nPromise return too long.\nLogged to console.\n```"))
-                .setFooter(`Runtime: ${(end / 1000).toFixed(3)}\u03bcs`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png")
+                .setFooter(`Runtime: ${end.toFixed(3)}${ending}`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png")
                 .setColor(24120);
 
             return (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`**INPUT:** \`${code}\``, {embed});
         } catch (err) {
             const hrDiff = process.hrtime(start);
-            const end = (hrDiff[0] > 0 ? (hrDiff[0] * 1000000000) : 0) + hrDiff[1];
+            let end = (hrDiff[0] > 0 ? (hrDiff[0] * 1000000000) : 0) + hrDiff[1];
 
+            let ending = this.endings[0], i = 0;
+
+            while (this.endings[i] && end > 1000) {
+                end /= 1000;
+                ending = this.endings[++i];
+            }
             console.error(err);
             embed.setTitle("<:panicbasket:267397363956580352>ERROR<:panicbasket:267397363956580352>")
                 .setDescription(`\`\`\`xl\n${clean(err)}\`\`\`\n`)
-                .setFooter(`Runtime: ${(end / 1000).toFixed(3)}\u03bcs`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png")
+                .setFooter(`Runtime: ${end.toFixed(3)}${ending}`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png")
                 .setColor(13379110);
 
             (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`**INPUT:** \`${code}\``, {embed}).catch(console.error);
