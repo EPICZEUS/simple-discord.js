@@ -52,12 +52,11 @@ class EvalCommand extends Command {
 
             if (typeof done !== "string") done = inspect(done, {depth:0});
 
-            embed.setTitle("OUTPUT")
-                .setDescription((done.length < 900 ? `\`\`\`js\n${clean(done, tokenReg)}\`\`\`` : "```\nPromise return too long.\nLogged to console.\n```"))
+            embed.setDescription(`**INPUT:**\`${code}\`\n**OUTPUT:**` + (done.length < 900 ? `\`\`\`js\n${clean(done, tokenReg)}\`\`\`` : "```\nPromise return too long.\nLogged to console.\n```"))
                 .setFooter(`Runtime: ${end.toFixed(3)}${ending}`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png")
                 .setColor(24120);
 
-            return (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`**INPUT:** \`${code}\``, {embed});
+            return (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed});
         } catch (err) {
             const hrDiff = process.hrtime(start);
             let end = (hrDiff[0] > 0 ? (hrDiff[0] * 1000000000) : 0) + hrDiff[1];
@@ -69,12 +68,11 @@ class EvalCommand extends Command {
                 ending = this.endings[++i];
             }
             console.error(err);
-            embed.setTitle("<:panicbasket:267397363956580352>ERROR<:panicbasket:267397363956580352>")
-                .setDescription(`\`\`\`xl\n${clean(err)}\`\`\`\n`)
+            embed.setDescription(`**INPUT:** \`${code}\`\n<:panicbasket:267397363956580352>**ERROR**<:panicbasket:267397363956580352>\n\`\`\`xl\n${clean(err)}\`\`\`\n`)
                 .setFooter(`Runtime: ${end.toFixed(3)}${ending}`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png")
                 .setColor(13379110);
 
-            (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`**INPUT:** \`${code}\``, {embed}).catch(console.error);
+            (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed}).catch(console.error);
         }
     }
 }
