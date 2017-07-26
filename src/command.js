@@ -135,7 +135,7 @@ class Command {
     }
 
     [inspect.custom](depth) {
-        return !depth ? `Command {
+        return !depth ? `${this.constructor.name} {
     Name: ${this.name},
     Type: ${this.type},
     Aliases: [Array]
