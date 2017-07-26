@@ -125,7 +125,8 @@ class SimpleClient extends Client {
         this._validateConfig();
 
         this.once('ready', () => {
-            this.utils.log(`Logged in as ${this.user.tag}!\nReady to serve in ${this.guilds.size} guild${this.guilds.size === 1 ? "" : "s"}!`);
+            this.utils.log(`Logged in as ${this.user.tag}!`);
+            this.utils.log(`Ready to serve in ${this.guilds.size} guild${this.guilds.size === 1 ? "" : "s"}!`);
 
             this.user.setGame(this._game);
         });
