@@ -49,9 +49,9 @@ class NewCommand extends Command {
             } finally {
                 if (fs.existsSync(fileDir)) delete require.cache[require.resolve(fileDir)];
             }
-
-            return (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`Succeeded: ${success.join(", ")}\nFailed: ${failure.join(", ")}`, {code:true});
         }
+
+        return (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`Succeeded: ${success.join(", ")}\nFailed: ${failure.join(", ")}`, {code:true});
     }
 }
 
