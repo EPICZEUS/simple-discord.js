@@ -138,7 +138,7 @@ class Command {
         return !depth ? `${this.constructor.name} {
     Name: ${this.name},
     Type: ${this.type},
-    Aliases: [Array]
+    Aliases: [ ${this.aliases ? this.aliases.length : 0} ]
 }` : "[Object]";
     }
 
