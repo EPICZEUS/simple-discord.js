@@ -20,13 +20,12 @@ class NewCommand extends Command {
         const dir = path.join(process.cwd(), this.client._commandsDir), success = [], failure = [];
 
         for (const cmd of args) {
-            const file = path.parse(cmd).ext ? cmd : cmd + ".js";
-
+            const file = path.parse(cmd).ext === ".js" ? cmd : cmd + ".js";
             const fileDir = path.join(dir, file);
 
-            if (!fs.existsSync(fileDir)) throw new Error(`Simple-Discord - The command file ${fileDir} could not be found.`);
-
             try {
+                if (!fs.existsSync(fileDir)) throw new Error(`Simple-Discord - The command file ${fileDir} could not be found.`);
+
                 const Command = require(fileDir);
 
                 const command = new Command(this.client);
