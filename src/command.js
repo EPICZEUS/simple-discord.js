@@ -1,4 +1,5 @@
 const SimpleClient = require("./client.js");
+const {inspect} = require("util");
 
 class Command {
     /**
@@ -131,6 +132,14 @@ class Command {
         this._throttling.set(user, throttling);
         
         return false;
+    }
+
+    [inspect.custom](depth) {
+        return !depth ? `Command {
+    Name: ${this.name},
+    Type: ${this.type},
+    Aliases: [Array]
+}` : "[Object]";
     }
 
     /**
