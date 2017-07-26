@@ -19,20 +19,19 @@ class Eval extends Command {
 
         this.endings = ["ns", "\u03bcs", "ms", "s"];
         this.default = true;
-        this.reg = new RegExp(`${this.client.token}|${this.client.token.split("").reverse().join("")}`.replace(/\./g, "\\."), "g");
     }
 
     clean(str) {
-        return typeof str === "string" ? str.replace(/[`@]/g, "$&\u200b").replace(this.reg, "[SECRET]") : str;
+        const reg = new RegExp(`${this.client.token}|${this.client.token.split("").reverse().join("")}`, "g");
+
+        return typeof str === "string" ? str.replace(/[`@]/g, "$&\u200b").replace(reg, "[SECRET]") : str;
     }
 
     async run(message, args) {
         const client = this.client, embed = new Discord.RichEmbed();
         const code = args.join(" ");
 
-        if (!code) return console.log("No code provided!");
-
-        console.log(code);
+        client.utils.log(code);
 
         const start = process.hrtime();
 
@@ -48,7 +47,7 @@ class Eval extends Command {
                 ending = this.endings[i];
             }
 
-            console.log(done);
+            client.utils.log(done);
 
             if (typeof done !== "string") done = inspect(done, {depth:0});
 
@@ -67,12 +66,12 @@ class Eval extends Command {
                 end /= 1000;
                 ending = this.endings[i];
             }
-            console.error(err);
+            client.utils.error(err);
             embed.setDescription(`**INPUT:** \`${code}\`\n<:panicbasket:267397363956580352>**ERROR**<:panicbasket:267397363956580352>\n\`\`\`xl\n${this.clean(err)}\`\`\`\n`)
                 .setFooter(`Runtime: ${end.toFixed(3)}${ending}`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png")
                 .setColor(13379110);
 
-            return (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed}).catch(console.error);
+            return (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed});
         }
     }
 }

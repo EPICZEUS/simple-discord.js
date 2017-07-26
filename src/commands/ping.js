@@ -1,6 +1,6 @@
 const Command = require("../command.js");
 
-class PingCommand extends Command {
+class Ping extends Command {
     constructor(client) {
         super(client, {
             name: "ping",
@@ -17,8 +17,8 @@ class PingCommand extends Command {
                 "Websocket:       " + Math.round(this.client.ping) + "ms\n" +
                 "Response Time:   " + (msg.createdTimestamp - message.createdTimestamp) + "ms\n```"
             );
-        }).catch(console.error);
+        });
     }
 }
 
-module.exports = PingCommand;
+module.exports = Ping;

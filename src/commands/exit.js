@@ -13,7 +13,7 @@ class Exit extends Command {
     }
 
     run() {
-        console.log("Bot shutting down.");
+        this.client.utils.log("Bot shutting down.");
         process.exit();
     }
 }

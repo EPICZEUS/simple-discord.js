@@ -44,7 +44,7 @@ class NewCommand extends Command {
 
                 success.push(command.name);
             } catch (err) {
-                console.error(err);
+                this.client.utils.error(err);
                 failure.push(cmd);
             } finally {
                 if (fs.existsSync(fileDir)) delete require.cache[require.resolve(fileDir)];

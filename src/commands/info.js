@@ -20,7 +20,7 @@ class Info extends Command {
     run(message, args = [""]) {
         const cmdFile = this.client.commands.get(args[0].toLowerCase()) || this.client.commands.get(this.client.aliases.get(args[0].toLowerCase()));
 
-        if (!cmdFile) return console.warn(`${args[0]} is not a valid command name or alias.`);
+        if (!cmdFile) return this.client.utils.warn(`${args[0]} is not a valid command name or alias.`);
 
         const howTo = cmdFile.use ? cmdFile.use.map(use => use[1] ? `<${use[0]}>` : `[${use[0]}]`).join(" ") : "";
         const use = this.client.prefix ? `${this.client.prefix}${cmdFile.name} ${howTo}` : `${howTo ? `${howTo} ` : ""}${cmdFile.name}${this.client.suffix}`;
@@ -40,7 +40,7 @@ class Info extends Command {
                 text: "<> - required, [] - optional"
             },
             color: 0x4d68cc
-        }}).catch(console.error);
+        }}).catch(this.client.utils.error);
     }
 }
 

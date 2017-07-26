@@ -1,7 +1,7 @@
 const Command = require("../command.js");
 const path = require("path");
 
-class ReloadCommand extends Command {
+class Reload extends Command {
     constructor(client) {
         super(client, {
             name: "reload",
@@ -47,7 +47,9 @@ class ReloadCommand extends Command {
         args = args.map(a => a.toLowerCase());
 
         if (args[0] === "all") {
-            for (const [name] of this.client.commands.filter(file => !file.default)) this.reload(name);
+            const commands = this.client.commands.filter(file => !file.default);
+
+            for (const [name] of commands) this.reload(name);
         } else if (args.some(a => this.client.commands.has(a) || this.client.commands.has(this.client.aliases.get(a)))) {
             for (const cmd of args) {
                 const command = this.client.commands.get(cmd) || this.client.commands.get(this.client.aliases.get(cmd));
@@ -61,4 +63,4 @@ class ReloadCommand extends Command {
     }
 }
 
-module.exports = ReloadCommand;
+module.exports = Reload;

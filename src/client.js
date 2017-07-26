@@ -3,6 +3,7 @@ const {inspect, promisify} = require("util");
 const fs = require("fs");
 const path = require("path");
 const readdir = promisify(fs.readdir);
+const util = require("./util.js");
 
 let _token;
 
@@ -114,10 +115,17 @@ class SimpleClient extends Client {
          */
         this._commandsDir = data.commandsDir || null;
 
+        /**
+         * General utilities.
+         * @member {Object}
+         * @public
+         */
+        this.utils = util;
+
         this._validateConfig();
 
         this.once('ready', () => {
-            console.log(`Logged in as ${this.user.tag}!\nReady to serve in ${this.guilds.size} guild${this.guilds.size === 1 ? "" : "s"}!`);
+            this.utils.log(`Logged in as ${this.user.tag}!\nReady to serve in ${this.guilds.size} guild${this.guilds.size === 1 ? "" : "s"}!`);
 
             this.user.setGame(this._game);
         });
@@ -141,11 +149,11 @@ class SimpleClient extends Client {
 
                 if (cmd.aliases) for (const alias of cmd.aliases) this.aliases.set(alias, cmd.name);
 
-                if (this._debug) console.log(`Loaded ${cmd.name}!`);
+                if (this._debug) this.utils.log(`Loaded ${cmd.name}!`);
 
                 delete require.cache[require.resolve(path.join(__dirname, "commands", file))];
             }
-        }).catch(console.error);
+        }).catch(this.utils.error);
 
         return this;
     }
@@ -168,17 +176,17 @@ class SimpleClient extends Client {
                 if (cmd.aliases) {
                     for (const alias of cmd.aliases) {
                         if (this.aliases.has(alias)) {
-                            console.error(`Command ${cmd.name} has duplicate alias ${alias}!`);
+                            this.utils.error(`Command ${cmd.name} has duplicate alias ${alias}!`);
                             continue;
                         }
                         this.aliases.set(alias, cmd.name);
                     }
                 }
-                if (this._debug) console.log(`Loaded ${cmd.name}!`);
+                if (this._debug) this.utils.log(`Loaded ${cmd.name}!`);
 
                 delete require.cache[require.resolve(path.join(dir, file))];
             }
-        }).then(() => console.log(`Loaded ${this.commands.size} commands.`)).catch(console.error);
+        }).then(() => this.utils.log(`Loaded ${this.commands.size} commands.`)).catch(this.utils.error);
 
         return this;
     }
@@ -191,7 +199,7 @@ class SimpleClient extends Client {
      */
     login() {
         return super.login(_token).catch(err => {
-            console.error(err, "\nThere was an error on login.", "\nPlease validate your token.");
+            this.utils.error(err, "\nThere was an error on login.", "\nPlease validate your token.");
             process.exit(1);
         });
     }
@@ -273,7 +281,7 @@ class SimpleClient extends Client {
         try {
             await cmdFile.run(message, args);
         } catch (err) {
-            console.error(err);
+            this.utils.error(err);
             message.channel.send(`There was an error running the ${cmdFile.name} command. \`\`\`xl\n${err}\`\`\`This shouldn't happen.`);
         }
     }
