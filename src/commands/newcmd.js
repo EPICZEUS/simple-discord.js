@@ -9,7 +9,7 @@ class NewCommand extends Command {
             type: "utility",
             description: "Adds a new command.",
             use: [
-                [ "command name or names", true ]
+                [ "command file name or names", true ]
             ]
         });
 
@@ -19,7 +19,9 @@ class NewCommand extends Command {
     run(message, args) {
         const dir = path.join(process.cwd(), this.client._commandsDir), success = [], failure = [];
 
-        for (const cmd of args) {
+        for (let cmd of args) {
+            if (!path.parse(cmd).ext) cmd = cmd + ".js";
+
             const fileDir = path.join(dir, cmd);
 
             if (!fs.existsSync(fileDir)) continue;
