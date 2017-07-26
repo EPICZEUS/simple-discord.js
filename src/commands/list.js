@@ -1,7 +1,7 @@
 const Command = require("../command.js");
 const {RichEmbed} = require("discord.js");
 
-class ListCommand extends Command {
+class List extends Command {
     constructor(client) {
         super(client, {
             name: "list",
@@ -42,8 +42,8 @@ class ListCommand extends Command {
             .setDescription(list.map(a => a.name).sort().join("\n"))
             .setColor(24120);
 
-        (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed}).catch(console.error);
+        return (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed}).catch(console.error);
     }
 }
 
-module.exports = ListCommand;
+module.exports = List;

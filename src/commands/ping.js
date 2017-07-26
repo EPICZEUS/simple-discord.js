@@ -12,7 +12,7 @@ class PingCommand extends Command {
     }
 
     run(message) {
-        message.channel.send("Pinging...").then(msg => {
+        return message.channel.send("Pinging...").then(msg => {
             return msg.edit("Calculated Ping```\n" +
                 "Websocket:       " + Math.round(this.client.ping) + "ms\n" +
                 "Response Time:   " + (msg.createdTimestamp - message.createdTimestamp) + "ms\n```"

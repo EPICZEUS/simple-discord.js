@@ -1,11 +1,11 @@
 const Command = require("../command.js");
 
-class ExitCommand extends Command {
+class Exit extends Command {
     constructor(client) {
         super(client, {
-            name: "restart",
+            name: "exit",
             type: "utility",
-            description: "Exits the process gracefully and lets pm2 turn it back on.",
+            description: "Exits the process gracefully.",
             ownerOnly: true
         });
 
@@ -18,4 +18,4 @@ class ExitCommand extends Command {
     }
 }
 
-module.exports = ExitCommand;
+module.exports = Exit;

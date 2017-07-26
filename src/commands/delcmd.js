@@ -1,6 +1,6 @@
 const Command = require("../command.js");
 
-class DelCommand extends Command {
+class Del extends Command {
     constructor(client) {
         super(client, {
             name: "delcmd",
@@ -15,8 +15,6 @@ class DelCommand extends Command {
     }
 
     run(message, args) {
-        if (!args.length) return console.error("Must specify at least one command!");
-
         for (const cmd of args) {
             const cmdFile = this.client.commands.get(cmd.toLowerCase()) || this.client.commands.get(this.client.aliases.get(cmd.toLowerCase()));
 
@@ -29,4 +27,4 @@ class DelCommand extends Command {
     }
 }
 
-module.exports = DelCommand;
+module.exports = Del;

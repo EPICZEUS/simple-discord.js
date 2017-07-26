@@ -27,60 +27,70 @@ class Command {
      */
     constructor(client, options) {
         /**
+         * The client this command is used for.
          * @type {SimpleClient}
          * @public
          */
         this.client = client;
         
         /**
+         * The name of the command.
          * @type {string}
          * @public
          */
         this.name = options.name;
         
         /**
+         * The command category.
          * @type {string}
          * @public
          */
         this.type = options.type;
         
         /**
+         * A brief explanation of the command.
          * @type {string}
          * @public
          */
         this.description = options.description;
         
         /**
+         * The arguments the command uses.
          * @type {Array<Array<string, boolean>>}
          * @public
          */
         this.use = options.use;
         
         /**
+         * The alternative command triggers.
          * @type {Array<string>}
          * @public
          */
         this.aliases = options.aliases;
         
         /**
+         * The required permissions.
          * @type {Array<PermissionResolvable>}
          * @public
          */
         this.permissions = options.permissions;
         
         /**
+         * If the command can only be triggered in a Guild.
          * @type {boolean}
          * @public
          */
         this.guildOnly = !!options.guildOnly;
         
         /**
+         * If only an owner can trigger the command.
          * @type {boolean}
          * @public
          */
         this.ownerOnly = !!options.ownerOnly;
         
         /**
+         * The throttling settings.
          * @type {ThrottlingOptions}
          * @public
          */

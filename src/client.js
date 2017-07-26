@@ -178,8 +178,7 @@ class SimpleClient extends Client {
 
                 delete require.cache[require.resolve(path.join(dir, file))];
             }
-            console.log(`Loaded ${this.commands.size} commands.`);
-        }).catch(console.error);
+        }).then(() => console.log(`Loaded ${this.commands.size} commands.`)).catch(console.error);
 
         return this;
     }

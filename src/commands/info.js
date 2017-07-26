@@ -1,7 +1,6 @@
 const Command = require("../command.js");
 
-
-class InfoCommand extends Command {
+class Info extends Command {
     constructor(client) {
         super(client, {
             name: "info",
@@ -26,7 +25,7 @@ class InfoCommand extends Command {
         const howTo = cmdFile.use ? cmdFile.use.map(use => use[1] ? `<${use[0]}>` : `[${use[0]}]`).join(" ") : "";
         const use = this.client.prefix ? `${this.client.prefix}${cmdFile.name} ${howTo}` : `${howTo ? `${howTo} ` : ""}${cmdFile.name}${this.client.suffix}`;
 
-        (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed: {
+        return (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed: {
             title: cmdFile.name.replace(/^./, l => l.toUpperCase()),
             description: cmdFile.description,
             fields: [{
@@ -45,4 +44,4 @@ class InfoCommand extends Command {
     }
 }
 
-module.exports = InfoCommand;
+module.exports = Info;
