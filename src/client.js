@@ -200,7 +200,9 @@ class SimpleClient extends Client {
      */
     login() {
         return super.login(_token).catch(err => {
-            this.utils.error(err, "\nThere was an error on login.", "\nPlease validate your token.");
+            this.utils.error(err);
+            this.utils.error("There was an error on login.");
+            this.utils.error("Please validate your token.");
             process.exit(1);
         });
     }

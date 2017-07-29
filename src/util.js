@@ -1,25 +1,30 @@
 const moment = require("moment");
 
-let chalk, ctx;
+let ctx;
 
 try {
-    chalk = require("chalk");
+    const chalk = require("chalk");
+    
     ctx = new chalk.constructor({enabled:true});
 } catch (err) {
     // silent
 }
 
+function getTime() {
+    return ((new Date().getHours() % 12) + 1 < 10 ? " " : "") + moment().format("LTS");
+}
+
 module.exports = {
     log(...args) {
-        if (ctx) console.log(((new Date().getHours() % 12) + 1 < 10 ? " " : "") + moment().format("LTS"), "|", ctx.grey("[LOG]"), ...args);
-        else console.log(((new Date().getHours() % 12) + 1 < 10 ? " " : "") + moment().format("LTS"), "|", ...args);
+        if (ctx) console.log(getTime(), "|", ctx.grey("[LOG]"), ...args);
+        else console.log(getTime(), "|", ...args);
     },
     warn(...args) {
-        if (ctx) console.error(((new Date().getHours() % 12) + 1 < 10 ? " " : "") + moment().format("LTS"), "|", ctx.yellow("[WARN]"), ...args);
-        else console.error(((new Date().getHours() % 12) + 1 < 10 ? " " : "") + moment().format("LTS"), "|", ...args);
+        if (ctx) console.error(getTime(), "|", ctx.yellow("[WARN]"), ...args);
+        else console.error(getTime(), "|", ...args);
     },
     error(...args) {
-        if (ctx) console.error(((new Date().getHours() % 12) + 1 < 10 ? " " : "") + moment().format("LTS"), "|", ctx.red("[ERROR]"), ...args);
-        else console.error(((new Date().getHours() % 12) + 1 < 10 ? " " : "") + moment().format("LTS"), "|", ...args);
+        if (ctx) console.error(getTime(), "|", ctx.red("[ERROR]"), ...args);
+        else console.error(getTime(), "|", ...args);
     }
 };
