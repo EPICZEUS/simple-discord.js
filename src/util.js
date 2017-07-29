@@ -4,14 +4,16 @@ let ctx;
 
 try {
     const chalk = require("chalk");
-    
+
     ctx = new chalk.constructor({enabled:true});
 } catch (err) {
     // silent
 }
 
 function getTime() {
-    return ((new Date().getHours() % 12) + 1 < 10 ? " " : "") + moment().format("LTS");
+    const curHour = new Date().getHours() % 12 || 12;
+
+    return (curHour < 10 ? " " : "") + moment().format("LTS");
 }
 
 module.exports = {
