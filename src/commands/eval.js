@@ -51,7 +51,7 @@ class Eval extends Command {
 
             if (typeof done !== "string") done = inspect(done, {depth:0});
 
-            embed.setDescription(`**INPUT:**\`${code}\`\n**OUTPUT:**` + (done.length < 900 ? `\`\`\`js\n${this.clean(done)}\`\`\`` : "```\nPromise return too long.\nLogged to console.\n```"))
+            embed.setDescription(`**INPUT:**\`\`\`js\n${code}\`\`\`\n**OUTPUT:**` + (done.length < 900 ? `\`\`\`js\n${this.clean(done)}\`\`\`` : "```\nPromise return too long.\nLogged to console.\n```"))
                 .setFooter(`Runtime: ${end.toFixed(3)}${ending}`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png")
                 .setColor(24120);
 
@@ -67,7 +67,7 @@ class Eval extends Command {
                 ending = this.endings[i];
             }
             client.utils.error(err);
-            embed.setDescription(`**INPUT:** \`${code}\`\n<:panicbasket:267397363956580352>**ERROR**<:panicbasket:267397363956580352>\n\`\`\`xl\n${this.clean(err)}\`\`\`\n`)
+            embed.setDescription(`**INPUT:** \`\`\`js\n${code}\`\`\`\n<:panicbasket:267397363956580352>**ERROR**<:panicbasket:267397363956580352>\n\`\`\`xl\n${this.clean(err)}\`\`\`\n`)
                 .setFooter(`Runtime: ${end.toFixed(3)}${ending}`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png")
                 .setColor(13379110);
 
