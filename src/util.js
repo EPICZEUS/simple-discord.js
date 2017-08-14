@@ -11,9 +11,7 @@ try {
 }
 
 function getTime() {
-    const curHour = new Date().getHours() % 12 || 12;
-
-    return (curHour < 10 ? " " : "") + moment().format("LTS");
+    return (" " + moment().format("LTS")).slice(-11);
 }
 
 module.exports = {
