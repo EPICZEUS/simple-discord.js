@@ -260,7 +260,7 @@ class SimpleClient extends Client {
         if (cmdFile.permissions) {
             if (!message.guild) return;
 
-            const perms = cmdFile.permissions.list.filter(validatePermissions);
+            const perms = cmdFile.permissions.filter(validatePermissions);
             let missing = [];
 
             if (!this._selfbot) {
