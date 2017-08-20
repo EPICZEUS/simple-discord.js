@@ -50,7 +50,7 @@ class Eval extends Command {
 
             client.utils.log(done);
 
-            if (typeof done !== "string") done = inspect(done);
+            if (typeof done !== "string") done = inspect(done, {depth:2});
 
             let suffix;
 
