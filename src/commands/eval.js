@@ -61,7 +61,7 @@ class Eval extends Command {
             } else if (done.length <= 1800) {
                 suffix = `\`\`\`js\n${this.clean(done)}\n\`\`\``;
             } else {
-                suffix = `\`\`\`xl\n${new RangeError("Result length too long. Logged in console")}\n\`\`\``;
+                suffix = `\`\`\`xl\n${new RangeError("Result length too long. Logged in console.")}\n\`\`\``;
             }
 
             embed.setDescription(`**INPUT:** \`\`\`js\n${code}\n\`\`\`\n**OUTPUT:** ${suffix}`)
