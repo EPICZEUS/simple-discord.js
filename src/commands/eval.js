@@ -52,7 +52,7 @@ class Eval extends Command {
 
             if (typeof done !== "string") done = inspect(done, {depth:0});
 
-            embed.setDescription(`**INPUT:**\`\`\`js\n${code}\n\`\`\`\n**OUTPUT:**` + (done.length < 900 ? `\`\`\`js\n${this.clean(done)}\n\`\`\`` : `Return too long, posted to [hastebin](${"https://hastebin.com/" + (await post("https://hastebin.com/documents").send(this.clean(done))).body.key + ".js"})`))
+            embed.setDescription(`**INPUT:** \`\`\`js\n${code}\n\`\`\`\n**OUTPUT:** ` + (done.length < 900 ? `\`\`\`js\n${this.clean(done)}\n\`\`\`` : `Return too long, posted to [hastebin](${"https://hastebin.com/" + (await post("https://hastebin.com/documents").send(this.clean(done))).body.key + ".js"})`))
                 .setFooter(`Runtime: ${end.toFixed(3)}${ending}`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png")
                 .setColor(24120);
 
