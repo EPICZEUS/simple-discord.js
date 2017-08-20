@@ -57,7 +57,7 @@ class Eval extends Command {
             if (done.length > 1800 && done.length < 400000) {
                 message = await (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))("Uploading to hastebin, this may take a moment...");
 
-                suffix = `[Upload success!](${"https://hastebin.com/" + (await post("https://hastebin.com/documents").send(this.clean(done))).body.key + ".js"})`;
+                suffix = `[Uploaded to hastebin](https://hastebin.com/${(await post("https://hastebin.com/documents").send(this.clean(done))).body.key}.js)`;
             } else if (done.length <= 1800) {
                 suffix = `\`\`\`js\n${this.clean(done)}\n\`\`\``;
             } else {
