@@ -50,12 +50,12 @@ class Eval extends Command {
 
             client.utils.log(done);
 
-            if (typeof done !== "string") done = inspect(done, {depth:0});
+            if (typeof done !== "string") done = inspect(done);
 
             let suffix;
 
             if (done.length > 1900) {
-                message = await (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))("Uploading to hastebin, this may take a moment...");
+                (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))("Uploading to hastebin, this may take a moment...");
 
                 suffix = `[Upload success!](${"https://hastebin.com/" + (await post("https://hastebin.com/documents").send(this.clean(done))).body.key + ".js"})`;
             } else {
