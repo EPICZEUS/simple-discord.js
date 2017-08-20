@@ -50,16 +50,18 @@ class Eval extends Command {
 
             client.utils.log(done);
 
-            if (typeof done !== "string") done = inspect(done, {depth:2});
+            if (typeof done !== "string") done = inspect(done, {depth:1});
 
             let suffix;
 
-            if (done.length > 1900) {
+            if (done.length > 1800 && done.length < 400000) {
                 (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))("Uploading to hastebin, this may take a moment...");
 
                 suffix = `[Upload success!](${"https://hastebin.com/" + (await post("https://hastebin.com/documents").send(this.clean(done))).body.key + ".js"})`;
-            } else {
+            } else if (done.length <= 1800) {
                 suffix = `\`\`\`js\n${this.clean(done)}\n\`\`\``;
+            } else {
+                suffix = `\`\`\`xl\n${new RangeError("Result length too long. Logged in console")}\n\`\`\``;
             }
 
             embed.setDescription(`**INPUT:** \`\`\`js\n${code}\n\`\`\`\n**OUTPUT:** ${suffix}`)
