@@ -59,7 +59,6 @@ class Eval extends Command {
                 message = await (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))("Uploading to gist, this may take a moment...");
 
                 const {id} = await post("https://api.github.com/gists").send({
-                    description: ``,
                     public: true,
                     files: {
                         [`output_${moment().format("YYYY_MM_DD")}_${message.author.id}.js`]: done
