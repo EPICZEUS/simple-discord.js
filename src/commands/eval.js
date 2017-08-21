@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const Command = require("../command.js");
+const moment = require("moment");
 const {inspect} = require("util");
 const {post} = require("snekfetch");
 
@@ -50,18 +51,24 @@ class Eval extends Command {
 
             client.utils.log(done);
 
-            if (typeof done !== "string") done = inspect(done, {depth:1});
+            if (typeof done !== "string") done = inspect(done);
 
             let suffix;
 
-            if (done.length > 1800 && done.length < 400000) {
-                message = await (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))("Uploading to hastebin, this may take a moment...");
+            if (done.length > 1800) {
+                message = await (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))("Uploading to gist, this may take a moment...");
 
-                suffix = `[Uploaded to hastebin](https://hastebin.com/${(await post("https://hastebin.com/documents").send(this.clean(done))).body.key}.js)`;
-            } else if (done.length <= 1800) {
-                suffix = `\`\`\`js\n${this.clean(done)}\n\`\`\``;
+                const {id} = await post("https://api.github.com/gists").send({
+                    description: ``,
+                    public: true,
+                    files: {
+                        [`output_${moment().format("YYYY_MM_DD")}_${message.author.id}.js`]: done
+                    }
+                }).then(res => JSON.parse(res.text));
+
+                suffix = `[Gist created](https://gist.github.com/${id})`;
             } else {
-                suffix = `\`\`\`xl\n${new RangeError("Result length too long. Logged in console.")}\n\`\`\``;
+                suffix = `\`\`\`js\n${this.clean(done)}\n\`\`\``;
             }
 
             embed.setDescription(`**INPUT:** \`\`\`js\n${code}\n\`\`\`\n**OUTPUT:** ${suffix}`)
