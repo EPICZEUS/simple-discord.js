@@ -61,7 +61,7 @@ class Eval extends Command {
                 const {id} = await post("https://api.github.com/gists").send({
                     public: true,
                     files: {
-                        [`output_${moment().format("YYYY_MM_DD")}_${message.author.id}.js`]: {content:done}
+                        [`output_${message.author.id}_${moment().format("YYYY_MM_DD")}.js`]: {content:done}
                     }
                 }).then(res => JSON.parse(res.text));
 
