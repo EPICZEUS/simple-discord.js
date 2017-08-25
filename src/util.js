@@ -15,15 +15,15 @@ function getTime() {
 }
 
 module.exports = {
-    log(...args) {
+    async log(...args) {
         if (ctx) console.log(getTime(), "|", ctx.grey("[LOG]"), ...args);
         else console.log(getTime(), "|", ...args);
     },
-    warn(...args) {
+    async warn(...args) {
         if (ctx) console.error(getTime(), "|", ctx.yellow("[WARN]"), ...args);
         else console.error(getTime(), "|", ...args);
     },
-    error(...args) {
+    async error(...args) {
         if (ctx) console.error(getTime(), "|", ctx.red("[ERROR]"), ...args);
         else console.error(getTime(), "|", ...args);
     }
