@@ -40,12 +40,10 @@ class Eval extends Command {
 
         try {
             evaled = await eval(code);
-            client.utils.log(evaled);
             embed.setColor(24120);
             suffix = "**OUTPUT**: ";
         } catch (err) {
             evaled = err;
-            client.utils.error(err);
             embed.setColor(13379110);
             suffix = "**ERROR**: ";
         }
@@ -58,6 +56,8 @@ class Eval extends Command {
             end /= 1000;
             ending = this.endings[i];
         }
+
+        client.utils[~suffix.indexOf("ERROR") ? "error" : "log"](evaled);
 
         if (typeof evaled !== "string") evaled = evaled instanceof Error ? evaled : inspect(evaled);
 
