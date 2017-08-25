@@ -63,15 +63,19 @@ class Eval extends Command {
 
         if (evaled.length > 1800) {
             message = await (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))("Uploading to gist, this may take a moment...");
-
-            const {id} = await post("https://api.github.com/gists").send({
-                public: true,
-                files: {
-                    [`output_${message.author.id}_${moment().format("YYYY_MM_DD")}.js`]: {content:evaled}
-                }
-            }).then(res => JSON.parse(res.text));
-
-            suffix += `[Gist created](https://gist.github.com/${id})`;
+            let id;
+            
+            try {
+                ({id} = await post("https://api.github.com/gists").send({
+                    public: true,
+                    files: {
+                        [`output_${message.author.id}_${moment().format("YYYY_MM_DD")}.js`]: {content:evaled}
+                    }
+                }).then(res => JSON.parse(res.text)));
+            } catch (err) {
+                client.utils.error(err);
+            }
+            suffix += id ? `[Gist created](https://gist.github.com/${id})` : "Failed to generate gist.";
         } else {
             suffix += `${this.clean(evaled)}\n\`\`\``;
         }
