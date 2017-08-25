@@ -29,11 +29,11 @@ class Reload extends Command {
 
             this.client.commands.set(name, command);
 
-            console.info(`Reloaded ${name} successfully!`);
+            this.client.utils.log(`Reloaded ${name} successfully!`);
             this.success++;
         } catch (err) {
-            console.error(`File failed to load: ${name}.`);
-            console.error(err);
+            this.client.utils.error(`File failed to load: ${name}.`);
+            this.client.utils.error(err);
             this.failure++;
         } finally {
             delete require.cache[require.resolve(dir)];

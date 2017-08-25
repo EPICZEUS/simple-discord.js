@@ -35,7 +35,7 @@ class NewCommand extends Command {
                 if (command.aliases) {
                     for (const alias of command.aliases) {
                         if (this.client.aliases.has(alias)) {
-                            console.error(`Command ${command.name} has duplicate alias ${alias}!`);
+                            this.client.utils.error(`Command ${command.name} has duplicate alias ${alias}!`);
                             continue;
                         }
                         this.client.aliases.set(alias, command.name.toLowerCase());
