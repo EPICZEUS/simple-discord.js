@@ -215,11 +215,11 @@ class SimpleClient extends Client {
         const user = this.user ? `${this.user.tag} (ID: ${this.user.id})` : null;
 
         return depth > 0 ? `SimpleClient {
-    User: ${user},
-    Guilds: { ${this.guilds.size} },
-    Channels: { ${this.channels.size} },
-    Users: { ${this.users.size} },
-    Commands: { ${this.commands.size} }
+  User: ${user},
+  Guilds: { ${this.guilds.size} },
+  Channels: { ${this.channels.size} },
+  Users: { ${this.users.size} },
+  Commands: { ${this.commands.size} }
 }` : "[Object]";
     }
 

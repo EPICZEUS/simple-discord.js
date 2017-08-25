@@ -136,9 +136,9 @@ class Command {
 
     [inspect.custom](depth) {
         return depth > 0 ? `${this.constructor.name} {
-    Name: ${this.name},
-    Type: ${this.type},
-    Aliases: ${this.aliases && this.aliases.length ? this.aliases.join(", ") : "<none>"}
+  Name: ${this.name},
+  Type: ${this.type},
+  Aliases: ${this.aliases && this.aliases.length ? this.aliases.join(", ") : "<none>"}
 }` : "[Object]";
     }
 
