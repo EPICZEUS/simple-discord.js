@@ -42,12 +42,12 @@ class Eval extends Command {
             evaled = await eval(code);
             client.utils.log(evaled);
             embed.setColor(24120);
-            suffix = `**OUTPUT**: \`\`\`js\n`;
+            suffix = "**OUTPUT**: ";
         } catch (err) {
             evaled = err;
             client.utils.error(err);
             embed.setColor(13379110);
-            suffix = `**ERROR**: \`\`\`xl\n`;
+            suffix = "**ERROR**: ";
         }
         const hrDiff = process.hrtime(start);
         let end = (hrDiff[0] > 0 ? (hrDiff[0] * 1000000000) : 0) + hrDiff[1];
@@ -77,7 +77,7 @@ class Eval extends Command {
             }
             suffix += id ? `[Gist created](https://gist.github.com/${id})` : "Failed to generate gist.";
         } else {
-            suffix += `${this.clean(evaled)}\n\`\`\``;
+            suffix += `\`\`\`${suffix === "**OUTPUT**: " ? "js" : "xl"}\n${this.clean(evaled)}\n\`\`\``;
         }
 
         embed.setDescription(`**INPUT:** \`\`\`js\n${code}\n\`\`\`\n${suffix}`)
