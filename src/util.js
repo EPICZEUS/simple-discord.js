@@ -14,16 +14,18 @@ function getTime() {
     return (" " + moment().format("LTS")).slice(-11);
 }
 
-module.exports = {
-    async log(...args) {
+module.exports = class Util {
+    static async log(...args) {
         if (ctx) console.log(getTime(), "|", ctx.grey("[LOG]"), ...args);
         else console.log(getTime(), "|", ...args);
-    },
-    async warn(...args) {
+    }
+    
+    static async warn(...args) {
         if (ctx) console.error(getTime(), "|", ctx.yellow("[WARN]"), ...args);
         else console.error(getTime(), "|", ...args);
-    },
-    async error(...args) {
+    }
+
+    static async error(...args) {
         if (ctx) console.error(getTime(), "|", ctx.red("[ERROR]"), ...args);
         else console.error(getTime(), "|", ...args);
     }
