@@ -59,7 +59,7 @@ class Eval extends Command {
             ending = this.endings[i];
         }
 
-        if (typeof evaled !== "string") evaled = inspect(evaled);
+        if (typeof evaled !== "string") evaled = evaled instanceof Error ? evaled : inspect(evaled);
 
         if (evaled.length > 1800) {
             message = await (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))("Uploading to gist, this may take a moment...");
