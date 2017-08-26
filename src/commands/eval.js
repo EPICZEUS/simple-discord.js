@@ -48,7 +48,7 @@ class Eval extends Command {
             suffix = "**ERROR**: ";
         }
         const hrDiff = process.hrtime(start);
-        let end = (hrDiff[0] > 0 ? (hrDiff[0] * 1000000000) : 0) + hrDiff[1];
+        let end = (hrDiff[0] * 1000000000) + hrDiff[1];
 
         let ending = this.endings[0], i = 0;
         
