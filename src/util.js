@@ -5,7 +5,7 @@ let ctx;
 try {
     const chalk = require("chalk");
 
-    ctx = new chalk.constructor({enabled:true});
+    ctx = new chalk.constructor({enabled:true, level:2});
 } catch (err) {
     // silent
 }
@@ -14,7 +14,7 @@ function getTime() {
     return (" " + moment().format("LTS")).slice(-11);
 }
 
-module.exports = class Util {
+class Util {
     static async log(...args) {
         if (ctx) console.log(getTime(), "|", ctx.grey("[LOG]"), ...args);
         else console.log(getTime(), "|", ...args);
@@ -29,4 +29,6 @@ module.exports = class Util {
         if (ctx) console.error(getTime(), "|", ctx.red("[ERROR]"), ...args);
         else console.error(getTime(), "|", ...args);
     }
-};
+}
+
+module.exports = Util;
