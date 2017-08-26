@@ -78,7 +78,7 @@ class SimpleClient extends Client {
          * @member {string}
          * @public
          */
-        this.suffix = !this._prefix && data.suffix ? data.suffix : null;
+        this.suffix = !this.prefix && data.suffix ? data.suffix : null;
 
         /**
          * Boolean respresentation of if this bot is a selfbot.
