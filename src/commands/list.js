@@ -33,7 +33,7 @@ class List extends Command {
                 .setDescription(types.sort().join("\n"))
                 .setColor(24120);
 
-            return (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed});
+            return (!this.client.user.bot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed});
         }
         const list = this.client.commands.filter(a => a.type === type);
 
@@ -42,7 +42,7 @@ class List extends Command {
             .setDescription(list.map(a => a.name).sort().join("\n"))
             .setColor(24120);
 
-        return (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed});
+        return (!this.client.user.bot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed});
     }
 }
 

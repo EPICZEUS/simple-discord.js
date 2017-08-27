@@ -19,7 +19,6 @@ class SimpleClient extends Client {
      * @property {Array<string>} owners - The ID of the bot owners.
      * @property {string} prefix - The command prefix for the bot.
      * @property {string} suffix - The command suffix for the bot.
-     * @property {boolean} selfbot - If the bot is a selfbot.
      * @property {string} game - The game to set on starting the bot.
      * @property {string} commandsDir - The relative path to the commands directory.
      * @property {boolean} debug - Whether to enable additional logging.
@@ -81,13 +80,6 @@ class SimpleClient extends Client {
         this.suffix = !this.prefix && data.suffix ? data.suffix : null;
 
         /**
-         * Boolean respresentation of if this bot is a selfbot.
-         * @member {boolean}
-         * @private
-         */
-        this._selfbot = !!data.selfbot;
-
-        /**
          * The game to be set on ready.
          * @member {string}
          * @private
@@ -127,6 +119,11 @@ class SimpleClient extends Client {
         this.once('ready', () => {
             this.utils.log(`Logged in as ${this.user.tag}!`);
             this.utils.log(`Ready to serve in ${this.guilds.size} guild${this.guilds.size === 1 ? "" : "s"}!`);
+
+            if (!this.user.bot) {
+                this.utils.log("Selfbot detected.");
+                this._owners = [this.user.id];
+            }
 
             this.user.setGame(this._game);
         });
@@ -233,7 +230,7 @@ class SimpleClient extends Client {
 
         const message = params[params.length - 1];
 
-        if ((this._selfbot && message.author.id !== this.user.id) || message.author.bot) return;
+        if ((!this.user.bot && message.author.id !== this.user.id) || message.author.bot) return;
 
         let command, args;
 
@@ -263,7 +260,7 @@ class SimpleClient extends Client {
             const perms = cmdFile.permissions.filter(validatePermissions);
             let missing = [];
 
-            if (!this._selfbot) {
+            if (this.user.bot) {
                 for (const perm of perms) if (!message.member.hasPermission(perm)) missing.push(perm);
 
                 if (missing.length) return message.channel.send(`To run this command, you need the following permissions: \`\`\`\n${missing.join(", ")}\n\`\`\``);
@@ -310,8 +307,6 @@ class SimpleClient extends Client {
         if (!Array.isArray(this._owners)) throw new TypeError("Simple-Discord - options.owners must be an array.");
 
         if (this._owners.length < 1) throw new RangeError("Simple-Discord - You must specify at least one owner ID.");
-
-        if (this._selfbot && this._owners.length > 1) throw new RangeError("Simple-Discord - A selfbot can only have one owner.");
 
         if (!this._commandsDir) throw new Error("Simple-Discord - A commands directory is required.");
 

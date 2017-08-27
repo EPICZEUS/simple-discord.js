@@ -62,7 +62,7 @@ class Eval extends Command {
         if (typeof evaled !== "string") evaled = evaled instanceof Error ? evaled : inspect(evaled);
 
         if (evaled.length > 1800) {
-            message = await (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))("Uploading to gist, this may take a moment...");
+            message = await (!client.user.bot ? message.edit.bind(message) : message.channel.send.bind(message.channel))("Uploading to gist, this may take a moment...");
             let id;
             
             try {
@@ -77,13 +77,13 @@ class Eval extends Command {
             }
             suffix += id ? `[Gist created](https://gist.github.com/${id})` : "Failed to generate gist.";
         } else {
-            suffix += `\`\`\`${suffix === "**OUTPUT**: " ? "js" : "xl"}\n${this.clean(evaled)}\n\`\`\``;
+            suffix += `\`\`\`${~suffix.indexOf("ERROR") ? "xl" : "js"}\n${this.clean(evaled)}\n\`\`\``;
         }
 
         embed.setDescription(`**INPUT:** \`\`\`js\n${code}\n\`\`\`\n${suffix}`)
             .setFooter(`Runtime: ${end.toFixed(3)}${ending}`, "https://cdn.discordapp.com/attachments/286943000159059968/298622278097305600/233782775726080012.png");
 
-        return (client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed});
+        return (!client.user.bot ? message.edit.bind(message) : message.channel.send.bind(message.channel))({embed});
     }
 }
 

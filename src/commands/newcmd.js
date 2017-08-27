@@ -51,7 +51,7 @@ class NewCommand extends Command {
             }
         }
 
-        return (this.client._selfbot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`Succeeded: ${success.length ? success.join(", ") : "None"}\nFailed: ${failure.length ? failure.join(", ") : "None"}`, {code:true});
+        return (!this.client.user.bot ? message.edit.bind(message) : message.channel.send.bind(message.channel))(`Succeeded: ${success.length ? success.join(", ") : "None"}\nFailed: ${failure.length ? failure.join(", ") : "None"}`, {code:true});
     }
 }
 
