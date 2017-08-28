@@ -71,7 +71,8 @@ class Eval extends Command {
                     description: ``,
                     files: {
                         [`output_${message.author.id}_${moment().format("YYYY_MM_DD")}.md`]: {
-                            content: `Evaled in ${message.guild ? `Guild **${message.guild.name}**,` : "DM with"} ${message.channel.type === "dm" ? `**${message.channel.recipient.tag}**` : `channel **#${message.channel.name}**`} at **${moment.utc().format("h:mm A")} UTC**
+                            content: `### Description
+Evaled in ${message.guild ? `Guild **${message.guild.name}**,` : "DM with"} ${message.channel.type === "dm" ? `**${message.channel.recipient.tag}**` : `channel **#${message.channel.name}**`} at **${moment.utc().format("h:mm A")} UTC**
 
 ## Input
 \`\`\`js
@@ -80,7 +81,7 @@ ${code}
 
 ## Output
 \`\`\`js
-${evaled}
+${this.clean(evaled)}
 \`\`\``
                         }
                     }
