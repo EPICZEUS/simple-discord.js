@@ -26,7 +26,7 @@ class Eval extends Command {
     clean(str) {
         const reg = new RegExp(`${this.client.token}|${this.client.token.split("").reverse().join("")}${this.client.user.bot ? "" : `|${this.client.user.email}`}`, "g");
 
-        return typeof str === "string" ? str.replace(/[`@]/g, "$&\u200b").replace(reg, "[SECRET]").replace(new RegExp(process.cwd().replace(/[.\\]/g, "\\$&"), "g"), ".") : str;
+        return typeof str === "string" ? str.replace(reg, "[SECRET]").replace(/[`@]/g, "$&\u200b").replace(new RegExp(process.cwd().replace(/[.\\]/g, "\\$&"), "g"), ".") : str;
     }
 
     async run(message, args) {
