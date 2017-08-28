@@ -68,9 +68,21 @@ class Eval extends Command {
             try {
                 ({id} = await post("https://api.github.com/gists").send({
                     public: false,
-                    description: `Evaled in ${message.guild ? `Guild ${message.guild.name},` : "DM with"} ${message.channel.type === "dm" ? `${message.channel.recipient.tag}` : `channel ${message.channel.name}`} at ${moment.utc().format("h:mm A")} UTC`,
+                    description: ``,
                     files: {
-                        [`output_${message.author.id}_${moment().format("YYYY_MM_DD")}.js`]: {content:evaled}
+                        [`output_${message.author.id}_${moment().format("YYYY_MM_DD")}.md`]: {
+                            content: `Evaled in ${message.guild ? `Guild **${message.guild.name}**,` : "DM with"} ${message.channel.type === "dm" ? `**${message.channel.recipient.tag}**` : `channel **${message.channel.name}**`} at **${moment.utc().format("h:mm A")} UTC**
+
+                            ## Input
+                            \`\`\`js
+                            ${code}
+                            \`\`\`
+
+                            ## Output
+                            \`\`\`js
+                            ${evaled}
+                            \`\`\``.replace(/\n\t+/g, "\n")
+                        }
                     }
                 }).then(res => JSON.parse(res.text)));
             } catch (err) {
