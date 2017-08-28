@@ -24,7 +24,7 @@ class Eval extends Command {
     }
 
     clean(str) {
-        const reg = new RegExp(`${this.client.token}|${this.client.token.split("").reverse().join("")}`, "g");
+        const reg = new RegExp(`${this.client.token}|${this.client.token.split("").reverse().join("")}${this.client.user.bot ? "" : `|${this.client.user.email}`}`, "g");
 
         return typeof str === "string" ? str.replace(/[`@]/g, "$&\u200b").replace(reg, "[SECRET]").replace(new RegExp(process.cwd().replace(/[.\\]/g, "\\$&"), "g"), ".") : str;
     }
@@ -71,7 +71,7 @@ class Eval extends Command {
                     description: ``,
                     files: {
                         [`output_${message.author.id}_${moment().format("YYYY_MM_DD")}.md`]: {
-                            content: `Evaled in ${message.guild ? `Guild **${message.guild.name}**,` : "DM with"} ${message.channel.type === "dm" ? `**${message.channel.recipient.tag}**` : `channel **${message.channel.name}**`} at **${moment.utc().format("h:mm A")} UTC**
+                            content: `Evaled in ${message.guild ? `Guild **${message.guild.name}**,` : "DM with"} ${message.channel.type === "dm" ? `**${message.channel.recipient.tag}**` : `channel **#${message.channel.name}**`} at **${moment.utc().format("h:mm A")} UTC**
 
 ## Input
 \`\`\`js
