@@ -54,6 +54,8 @@ class Util {
                 const [, id] = idReg.exec(cleanContent[i]) || [];
 
                 if (id) args[options.name] = message.client.channels.get(id);
+            } else if (options.type === "id") {
+                if (/\d{17,20}/.test(cleanContent[i])) args[options.name] = cleanContent[last];
             } else if (options.type === "number") {
                 args[options.name] = Number(cleanContent[i]);
             } else if (options.type === "string") {
