@@ -43,15 +43,15 @@ class Util {
             args[options.name] = null;
 
             if (options.type === "member") {
-                const {id} = idReg.exec(cleanContent[i]) || {};
+                const [, id] = idReg.exec(cleanContent[i]) || [];
 
                 if (id) args[options.name] = message.guild.member(id) || await message.guild.fetchMember(id);
             } else if (options.type === "user") {
-                const {id} = idReg.exec(cleanContent[i]) || {};
+                const [, id] = idReg.exec(cleanContent[i]) || [];
 
                 if (id) args[options.name] = message.client.users.get(id);
             } else if (options.type === "channel") {
-                const {id} = idReg.exec(cleanContent[i]) || {};
+                const [, id] = idReg.exec(cleanContent[i]) || [];
 
                 if (id) args[options.name] = message.client.channels.get(id);
             } else if (options.type === "number") {
