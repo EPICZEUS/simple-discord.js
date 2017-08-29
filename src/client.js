@@ -282,15 +282,13 @@ class SimpleClient extends Client {
 
         if (cmd.throttle(message.author.id)) return message.channel.send(`To run this command, you need to cool down, you're going too fast.`);
 
-        const args = this.utils.parseArgs(message, content, cmd.use);
+        const args = await this.utils.parseArgs(message, content, cmd.use);
 
         if (Array.isArray(args) && this._badUseResponse) {
             const use = cmd.use.map(a => a.required ? `<${a.name}>` : `[${a.name}]`);
 
             return message.reply(`Improperly ordered or missing args! Proper use: \`\`\`\n${this.prefix ? `${this.prefix}${cmd.name} ` : ""}${use.join(" ")}${this.suffix ? ` ${cmd.name}${this.suffix}` : ""}\n\`\`\``);
         }
-
-        this.utils.log(args);
 
         try {
             await cmd.run(message, args);
