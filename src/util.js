@@ -65,9 +65,7 @@ class Util {
             if (args[options.name] && (args[options.name] !== options.default || (options.type === "number" && !isNaN(args[options.name])))) ++last;
         }
 
-        message.client.utils.log(args);
-
-        if (required.every(a => args[a] !== null)) return required;
+        if (!required.every(a => args[a] !== null)) return required;
 
         return args;
     }

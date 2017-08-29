@@ -290,8 +290,6 @@ class SimpleClient extends Client {
             return this._badUseResponse ? message.reply(`Improperly ordered or missing args! Proper use: \`\`\`\n${this.prefix ? `${this.prefix}${cmd.name} ` : ""}${use.join(" ")}${this.suffix ? ` ${cmd.name}${this.suffix}` : ""}\n\`\`\``) : null;
         }
 
-        this.utils.log(args);
-
         try {
             await cmd.run(message, args);
         } catch (err) {
