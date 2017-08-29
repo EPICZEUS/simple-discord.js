@@ -6,14 +6,22 @@ class Command {
      * @typedef {Object} CommandOptions
      * @property {string} name - The command name.
      * @property {string} description - The command description.
-     * @property {Array<Array<string, boolean>>} use - The command arguments.
+     * @property {Array<Array<ArgOptions>>} use - The command arguments.
      * @property {Array<string>} aliases - Aliases for the command.
      * @property {Array<string>} permissions - Permissions required to run the command.
      * @property {boolean} guildOnly - If the command can only be run in a guild.
      * @property {boolean} ownerOnly - If the command can only be run by a bot owner.
      * @property {ThrottlingOptions} throttling - Options for throttling usages for the command.
      */
-     
+
+    /**
+     * @typedef {Object} ArgOptions
+     * @property {string} name - The argument name.
+     * @property {string} type - The type or instance the argument should be.
+     * @property {boolean} single - For strings, if it's one word.
+     * @property {boolean} required - If the argument is required for the command.
+     */
+
     /**
      * @typedef {Object} ThrottlingOptions
      * @property {number} usages - Maximum number of usages of the command allowed in the specified duration.
@@ -153,7 +161,10 @@ class Command {
         if (!this.type) throw new Error("Simple-Discord - Command type is required.");
         if (!this.description) throw new Error("Simple-Discord - Command description is required.");
         if (this.aliases && !Array.isArray(this.aliases)) throw new TypeError("Simple-Discord - Command aliases must be in an array.");
-        if (this.use && !Array.isArray(this.use)) throw new TypeError("Simple-Discord - Command use must be an array.");
+        if (this.use) {
+            if (!Array.isArray(this.use)) throw new TypeError("Simple-Discord - Command use must be an array.");
+            if (!this.use.every(opts => typeof opts.name === "string" && typeof opts.type === "string")) throw new Error(`Simple-Discord - Argument options for ${this.name} are invalid.`);
+        }
         if (this.throttling && (typeof this.throttling.usages !== "number" || typeof this.throttling.duration !== "number")) throw new Error("Simple-Discord - Command throttling contains invalid parameters.");
         if (this.throttling && (this.throttling.usages === 0 || this.throttling.duration === 0)) throw new Error("Simple-Discord - Command throttling parameters cannot be zero.");
     }

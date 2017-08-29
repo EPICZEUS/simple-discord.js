@@ -8,7 +8,11 @@ class Reload extends Command {
             type: "utility",
             description: "Reloads commands.",
             use: [
-                ["`all` or list of commands", true]
+                {
+                    name: "names",
+                    type: "string",
+                    required: true
+                }
             ],
             aliases: [
                 "refresh"
@@ -44,14 +48,14 @@ class Reload extends Command {
         this.success = 0;
         this.failure = 0;
 
-        args = args.map(a => a.toLowerCase());
+        const commands = args.names.split(" ").map(a => a.toLowerCase());
 
-        if (args[0] === "all") {
+        if (commands[0] === "all") {
             const commands = this.client.commands.filter(file => !file.default);
 
             for (const [name] of commands) this.reload(name);
-        } else if (args.some(a => this.client.commands.has(a) || this.client.commands.has(this.client.aliases.get(a)))) {
-            for (const cmd of args) {
+        } else if (commands.some(a => this.client.commands.has(a) || this.client.commands.has(this.client.aliases.get(a)))) {
+            for (const cmd of commands) {
                 const command = this.client.commands.get(cmd) || this.client.commands.get(this.client.aliases.get(cmd));
                 
                 if (!command || command.default) continue;

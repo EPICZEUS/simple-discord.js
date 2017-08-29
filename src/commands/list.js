@@ -6,9 +6,14 @@ class List extends Command {
         super(client, {
             name: "list",
             type: "utility",
-            description: "Lists all commands of a specified type",
+            description: "Lists all commands of a specified type, or lists exiting types when passed `types`",
             use: [
-                ["type or 'types'", true]
+                {
+                    name: "type",
+                    type: "string",
+                    single: true,
+                    required: true
+                }
             ],
             aliases: [
                 "ls"

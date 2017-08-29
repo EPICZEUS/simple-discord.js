@@ -9,7 +9,11 @@ class NewCommand extends Command {
             type: "utility",
             description: "Adds a new command.",
             use: [
-                [ "command file name or names", true ]
+                {
+                    name: "names",
+                    type: "string",
+                    required: true
+                }
             ]
         });
 
@@ -18,8 +22,9 @@ class NewCommand extends Command {
 
     run(message, args) {
         const dir = path.join(process.cwd(), this.client._commandsDir), success = [], failure = [];
+        const commands = args.names.split(" ");
 
-        for (const cmd of args) {
+        for (const cmd of commands) {
             const file = path.parse(cmd).ext === ".js" ? cmd : cmd + ".js";
             const fileDir = path.join(dir, file);
 

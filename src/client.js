@@ -21,6 +21,7 @@ class SimpleClient extends Client {
      * @property {string} suffix - The command suffix for the bot.
      * @property {string} game - The game to set on starting the bot.
      * @property {string} commandsDir - The relative path to the commands directory.
+     * @property {boolean} basUseResponse - If the bot should display how to use an improperly called command.
      * @property {boolean} debug - Whether to enable additional logging.
      */
 
@@ -92,6 +93,13 @@ class SimpleClient extends Client {
          * @private
          */
         this._owners = data.owners;
+
+        /**
+         * Boolean representation if the bot should display how to use a command when one is called improperly.
+         * @member {boolean}
+         * @private
+         */
+        this._badUseResponse = !!options.badUseResponse;
 
         /**
          * Boolean representation of if there should be extra logging.
@@ -232,32 +240,32 @@ class SimpleClient extends Client {
 
         if ((!this.user.bot && message.author.id !== this.user.id) || message.author.bot) return;
 
-        let command, args;
+        let command, content;
 
         if (this.prefix) {
             if (!message.content.startsWith(this.prefix)) return;
 
-            [command = "", ...args] = message.content.slice(this.prefix.length).split(/ +/);
+            [command = "", ...content] = message.content.slice(this.prefix.length).split(/ +/);
         } else if (this.suffix) {
             if (!message.content.endsWith(this.suffix)) return;
 
-            args = message.content.split(/ +/);
-            command = args.pop().slice(0, -this.suffix.length);
+            content = message.content.split(/ +/);
+            command = content.pop().slice(0, -this.suffix.length);
         }
         command = command.toLowerCase();
 
-        const cmdFile = this.commands.get(command) || this.commands.get(this.aliases.get(command));
+        const cmd = this.commands.get(command) || this.commands.get(this.aliases.get(command));
 
-        if (!cmdFile) return;
+        if (!cmd) return;
 
-        if (cmdFile.guildOnly && message.channel.type !== "text") return;
+        if (cmd.guildOnly && message.channel.type !== "text") return;
 
-        if (cmdFile.ownerOnly && !this._owners.includes(message.author.id)) return;
+        if (cmd.ownerOnly && !this._owners.includes(message.author.id)) return;
 
-        if (cmdFile.permissions) {
+        if (cmd.permissions) {
             if (!message.guild) return;
 
-            const perms = cmdFile.permissions.filter(validatePermissions);
+            const perms = cmd.permissions.filter(validatePermissions);
             let missing = [];
 
             if (this.user.bot) {
@@ -272,17 +280,21 @@ class SimpleClient extends Client {
             if (missing.length) return message.channel.send(`To run this command, I need the following permissions: \`\`\`\n${missing.join(", ")}\n\`\`\``);
         }
 
-        if (cmdFile.throttle(message.author.id)) return message.channel.send(`To run this command, you need to cool down, you're going too fast.`);
+        if (cmd.throttle(message.author.id)) return message.channel.send(`To run this command, you need to cool down, you're going too fast.`);
 
-        const minArgCount = cmdFile.use ? cmdFile.use.filter(a => a[1]).length : 0;
+        const args = this.utils.parseArgs(message, content, cmd.use);
 
-        if (args.length < minArgCount) return message.channel.send(`The command ${cmdFile.name} has a minimum argument count of ${minArgCount}. Please provide proper arguments.`);
+        if (Array.isArray(args) && this._badUseResponse) {
+            const use = cmd.use.map(a => a.required ? `<${a.name}>` : `[${a.name}]`);
+
+            return message.reply(`Improperly ordered or missing args! Proper use: \`\`\`\n${this.prefix ? `${this.prefix}${cmd.name} ` : ""}${use.join(" ")}${this.suffix ? ` ${cmd.name}${this.suffix}` : ""}\n\`\`\``);
+        }
 
         try {
-            await cmdFile.run(message, args);
+            await cmd.run(message, args);
         } catch (err) {
             this.utils.error(err);
-            message.channel.send(`There was an error running the ${cmdFile.name} command. \`\`\`xl\n${err}\`\`\`This shouldn't happen.`);
+            message.channel.send(`There was an error running the ${cmd.name} command. \`\`\`xl\n${err}\`\`\``);
         }
     }
 

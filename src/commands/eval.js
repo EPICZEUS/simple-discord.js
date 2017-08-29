@@ -11,7 +11,11 @@ class Eval extends Command {
             type: "utility",
             description: "Evaluates code from a provided string.",
             use: [
-                ["code", true]
+                {
+                    name: "code",
+                    type: "string",
+                    required: true
+                }
             ],
             aliases: [
                 "run"
@@ -31,7 +35,7 @@ class Eval extends Command {
 
     async run(message, args) {
         const client = this.client, embed = new Discord.RichEmbed();
-        const code = args.join(" ");
+        const {code} = args;
 
         client.utils.log(code);
 

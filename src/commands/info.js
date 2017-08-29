@@ -7,7 +7,12 @@ class Info extends Command {
             type: "general",
             description: "Displays info about the specified command.",
             use: [
-                ["command or alias", true]
+                {
+                    name: "command",
+                    type: "string",
+                    single: true,
+                    required: true
+                }
             ],
             aliases: [
                 "help"
@@ -17,8 +22,10 @@ class Info extends Command {
         this.default = true;
     }
 
-    run(message, args = [""]) {
-        const cmdFile = this.client.commands.get(args[0].toLowerCase()) || this.client.commands.get(this.client.aliases.get(args[0].toLowerCase()));
+    run(message, args) {
+        const command = args.command.toLowerCase();
+
+        const cmdFile = this.client.commands.get(command) || this.client.commands.get(this.client.aliases.get(command));
 
         if (!cmdFile) return this.client.utils.warn(`${args[0]} is not a valid command name or alias.`);
 

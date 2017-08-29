@@ -6,7 +6,11 @@ class Del extends Command {
             name: "delcmd",
             type: "utility",
             use: [
-                [ "command name or names", true ]
+                {
+                    name: "name",
+                    type: "string",
+                    required: true
+                }
             ],
             description: "Deletes a specified command or group of commands."
         });
@@ -15,7 +19,9 @@ class Del extends Command {
     }
 
     run(message, args) {
-        for (const cmd of args) {
+        const commands = args.names.split(" ");
+
+        for (const cmd of commands) {
             const cmdFile = this.client.commands.get(cmd.toLowerCase()) || this.client.commands.get(this.client.aliases.get(cmd.toLowerCase()));
 
             if (!cmdFile || cmdFile.default) continue;
