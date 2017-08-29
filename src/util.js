@@ -67,6 +67,8 @@ class Util {
 
         if (required.every(a => args[a] !== null)) return required;
 
+        message.client.utils.log(args);
+
         return args;
     }
 }
