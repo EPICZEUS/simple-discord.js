@@ -250,17 +250,9 @@ class SimpleClient extends Client {
 
         const cmd = this.commands.get(command) || this.commands.get(this.aliases.get(command));
 
-        this.utils.log(command, content, cmd);
-
         if (!cmd) return;
-        
-        if ((cmd.guildOnly || cmd.permissions) && !message.guild) return;
-        
-        this.utils.log("Pass guildOnly/permissions check");
-
-        if (cmd.ownerOnly && !this._owners.includes(message.author.id)) return;
-
-        this.utils.log("Pass ownerOnly check");
+        else if ((cmd.guildOnly || cmd.permissions) && !message.guild) return;
+        else if (cmd.ownerOnly && !this._owners.includes(message.author.id)) return;
 
         if (cmd.permissions) {
             const perms = cmd.permissions.filter(perm => Object.keys(Permissions.FLAGS).includes(perm));
@@ -279,8 +271,6 @@ class SimpleClient extends Client {
         if (cmd.throttle(message.author.id)) return message.channel.send(`To run this command, you need to cool down, you're going too fast.`);
 
         const args = await this.utils.parseArgs(message, content, cmd.use);
-
-        this.util.log(args);
 
         if (Array.isArray(args)) {
             const use = cmd.use.map(a => a.required ? `<${a.name}>` : `[${a.name}]`);
