@@ -3,7 +3,6 @@ const {inspect, promisify} = require("util");
 const fs = require("fs");
 const path = require("path");
 const readdir = promisify(fs.readdir);
-const readFile = promisify(fs.readFile);
 const util = require("./utils.js");
 
 class SimpleClient extends Client {
@@ -274,6 +273,8 @@ class SimpleClient extends Client {
         if (cmd.throttle(message.author.id)) return message.channel.send(`To run this command, you need to cool down, you're going too fast.`);
 
         const args = await this.utils.parseArgs(message, content, cmd.use);
+
+        this.util.log(args);
 
         if (Array.isArray(args)) {
             const use = cmd.use.map(a => a.required ? `<${a.name}>` : `[${a.name}]`);
