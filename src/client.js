@@ -252,8 +252,10 @@ class SimpleClient extends Client {
         const cmd = this.commands.get(command) || this.commands.get(this.aliases.get(command));
 
         if (!cmd) return;
-        else if ((cmd.guildOnly || cmd.permissions) && !message.guild) return;
-        else if (cmd.ownerOnly && !this._owners.includes(message.author.id)) return;
+        
+        if ((cmd.guildOnly || cmd.permissions) && !message.guild) return;
+        
+        if (cmd.ownerOnly && !this._owners.includes(message.author.id)) return;
 
         if (cmd.permissions) {
             const perms = cmd.permissions.filter(perm => Object.keys(Permissions.FLAGS).includes(perm));
