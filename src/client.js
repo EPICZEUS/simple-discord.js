@@ -244,13 +244,13 @@ class SimpleClient extends Client {
             if (!message.content.endsWith(this.suffix)) return;
 
             content = message.content.split(/ +/);
-            command = content.pop().substr(0, -this.suffix.length);
+            command = content.pop().slice(0, -this.suffix.length);
         }
         command = command.toLowerCase();
 
         const cmd = this.commands.get(command) || this.commands.get(this.aliases.get(command));
 
-        this.utils.log(command, cmd);
+        this.utils.log(command, content, cmd);
 
         if (!cmd) return;
         
