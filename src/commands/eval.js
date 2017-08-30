@@ -70,7 +70,7 @@ class Eval extends Command {
             let id;
             
             try {
-                ({id} = await post("https://api.github.com/gists").send({
+                ({body:{id}} = await post("https://api.github.com/gists").send({
                     public: false,
                     description: ``,
                     files: {
@@ -89,7 +89,7 @@ ${this.clean(evaled)}
 \`\`\``
                         }
                     }
-                }).then(res => JSON.parse(res.text)));
+                }));
             } catch (err) {
                 client.utils.error(err);
             }

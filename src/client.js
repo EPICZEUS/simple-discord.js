@@ -3,13 +3,8 @@ const {inspect, promisify} = require("util");
 const fs = require("fs");
 const path = require("path");
 const readdir = promisify(fs.readdir);
-const util = require("./util.js");
-
-let _token;
-
-function validatePermissions(perm) {
-    return Object.keys(Permissions.FLAGS).includes(perm);
-}
+const readFile = promisify(fs.readFile);
+const util = require("./utils.js");
 
 class SimpleClient extends Client {
     /**
@@ -34,86 +29,7 @@ class SimpleClient extends Client {
     constructor(options = {}) {
         super(options);
 
-        let data;
-
-        if (options.configDir) {
-            const dir = path.isAbsolute(options.configDir) ? options.configDir : path.join(process.cwd(), options.configDir);
-
-            if (!fs.existsSync(dir)) throw new Error(`Simple-Discord - No config found at ${dir}. Is this path correct?`);
-
-            const {ext} = path.parse(dir);
-
-            if (ext && ext !== ".json") throw new TypeError("Simple-Discord - Config file extention type is expected to be json.");
-
-            data = JSON.parse(fs.readFileSync(dir));
-        } else {
-            data = options;
-        }
-
-        _token = data.token;
-
-        /**
-         * The commands for the bot.
-         * @type {Collection<string, Command>}
-         * @public
-         */
-        this.commands = new Collection();
-
-        /**
-         * The command aliases.
-         * @type {Collection<string, string>}
-         * @public
-         */
-        this.aliases = new Collection();
-
-        /**
-         * The command prefix.
-         * @member {string}
-         * @public
-         */
-        this.prefix = data.prefix || null;
-        
-        /**
-         * The command suffix.
-         * @member {string}
-         * @public
-         */
-        this.suffix = !this.prefix && data.suffix ? data.suffix : null;
-
-        /**
-         * The game to be set on ready.
-         * @member {string}
-         * @private
-         */
-        this._game = data.game || null;
-
-        /**
-         * An array of owner ids for the bot.
-         * @member {Array<string>}
-         * @private
-         */
-        this._owners = data.owners;
-
-        /**
-         * Boolean representation if the bot should display how to use a command when one is called improperly.
-         * @member {boolean}
-         * @private
-         */
-        this._badUseResponse = !!options.badUseResponse;
-
-        /**
-         * Boolean representation of if there should be extra logging.
-         * @member {boolean}
-         * @private
-         */
-        this._debug = !!data.debug;
-
-        /**
-         * The directory for bot commands
-         * @member {string}
-         * @private
-         */
-        this._commandsDir = data.commandsDir || null;
+        this._loadConfig(options);
 
         /**
          * General utilities.
@@ -204,7 +120,7 @@ class SimpleClient extends Client {
      * @returns {Promise<string>}
      */
     login() {
-        return super.login(_token).catch(err => {
+        return super.login(this.token).catch(err => {
             this.utils.error(err);
             this.utils.error("There was an error on login.");
             this.utils.error("Please validate your token.");
@@ -245,37 +161,31 @@ class SimpleClient extends Client {
         if (this.prefix) {
             if (!message.content.startsWith(this.prefix)) return;
 
-            [command = "", ...content] = message.content.slice(this.prefix.length).split(/ +/);
+            [command = "", ...content] = message.content.substring(this.prefix.length).split(/ +/);
         } else if (this.suffix) {
             if (!message.content.endsWith(this.suffix)) return;
 
             content = message.content.split(/ +/);
-            command = content.pop().slice(0, -this.suffix.length);
+            command = content.pop().substr(0, -this.suffix.length);
         }
         command = command.toLowerCase();
 
         const cmd = this.commands.get(command) || this.commands.get(this.aliases.get(command));
 
         if (!cmd) return;
-
-        if (cmd.guildOnly && message.channel.type !== "text") return;
-
-        if (cmd.ownerOnly && !this._owners.includes(message.author.id)) return;
+        else if ((cmd.guildOnly || cmd.permissions) && !message.guild) return;
+        else if (cmd.ownerOnly && !this._owners.includes(message.author.id)) return;
 
         if (cmd.permissions) {
-            if (!message.guild) return;
-
-            const perms = cmd.permissions.filter(validatePermissions);
-            let missing = [];
+            const perms = cmd.permissions.filter(perm => Object.keys(Permissions.FLAGS).includes(perm));
+            let missing;
 
             if (this.user.bot) {
-                for (const perm of perms) if (!message.member.hasPermission(perm)) missing.push(perm);
+                missing = perms.filter(perm => !message.member.hasPermission(perm));
 
                 if (missing.length) return message.channel.send(`To run this command, you need the following permissions: \`\`\`\n${missing.join(", ")}\n\`\`\``);
             }
-            missing = [];
-
-            for (const perm of perms) if (!message.guild.me.hasPermission(perm)) missing.push(perm);
+            missing = perms.filter(perm => !message.guild.me.hasPermission(perm));
 
             if (missing.length) return message.channel.send(`To run this command, I need the following permissions: \`\`\`\n${missing.join(", ")}\n\`\`\``);
         }
@@ -287,7 +197,9 @@ class SimpleClient extends Client {
         if (Array.isArray(args)) {
             const use = cmd.use.map(a => a.required ? `<${a.name}>` : `[${a.name}]`);
 
-            return this._badUseResponse ? message.reply(`Improperly ordered or missing args! Proper use: \`\`\`\n${this.prefix ? `${this.prefix}${cmd.name} ` : ""}${use.join(" ")}${this.suffix ? ` ${cmd.name}${this.suffix}` : ""}\n\`\`\``) : null;
+            if (this._badUseResponse) message.reply(`Improperly ordered or missing args! Proper use: \`\`\`\n${this.prefix ? `${this.prefix}${cmd.name} ` : ""}${use.join(" ")}${this.suffix ? ` ${cmd.name}${this.suffix}` : ""}\n\`\`\``);
+
+            return;
         }
 
         try {
@@ -299,15 +211,104 @@ class SimpleClient extends Client {
     }
 
     /**
+     * Loads configuration data.
+     * @method _loadConfig
+     * @param {SimpleClientOptions} options - The options for the client.
+     * @private
+     */
+    async _loadConfig(options) {
+        let data;
+
+        if (options.configDir) {
+            const dir = path.isAbsolute(options.configDir) ? options.configDir : path.join(process.cwd(), options.configDir);
+
+            if (!fs.existsSync(dir)) throw new Error(`Simple-Discord - No config found at ${dir}. Is this path correct?`);
+
+            const {ext} = path.parse(dir);
+
+            if (!ext || ext !== ".json") throw new TypeError("Simple-Discord - Config file extention type is expected to be json.");
+
+            data = JSON.parse(await readFile(dir));
+        } else {
+            data = options;
+        }
+
+        this.token = data.token;
+
+        /**
+         * The commands for the bot.
+         * @type {Collection<string, Command>}
+         * @public
+         */
+        this.commands = new Collection();
+
+        /**
+         * The command aliases.
+         * @type {Collection<string, string>}
+         * @public
+         */
+        this.aliases = new Collection();
+
+        /**
+         * The command prefix.
+         * @member {string}
+         * @public
+         */
+        this.prefix = data.prefix || null;
+        
+        /**
+         * The command suffix.
+         * @member {string}
+         * @public
+         */
+        this.suffix = !this.prefix && data.suffix ? data.suffix : null;
+
+        /**
+         * The game to be set on ready.
+         * @member {string}
+         * @private
+         */
+        this._game = data.game || null;
+
+        /**
+         * An array of owner ids for the bot.
+         * @member {Array<string>}
+         * @private
+         */
+        this._owners = data.owners;
+
+        /**
+         * Boolean representation if the bot should display how to use a command when one is called improperly.
+         * @member {boolean}
+         * @private
+         */
+        this._badUseResponse = !!options.badUseResponse;
+
+        /**
+         * Boolean representation of if there should be extra logging.
+         * @member {boolean}
+         * @private
+         */
+        this._debug = !!data.debug;
+
+        /**
+         * The directory for bot commands
+         * @member {string}
+         * @private
+         */
+        this._commandsDir = data.commandsDir || null;
+    }
+
+    /**
      * Validates the provided configuration options.
      * @method _validateConfig
      * @throws {Error|TypeError|RangeError}
      * @private
      */
     _validateConfig() {
-        if (!_token) throw new Error("Simple-Discord - Please provide a login token.");
+        if (!this.token) throw new Error("Simple-Discord - Please provide a login token.");
 
-        if (typeof _token !== "string") throw new TypeError("Simple-Discord - Your token must be a string.");
+        if (typeof this.token !== "string") throw new TypeError("Simple-Discord - Your token must be a string.");
 
         if (!this.prefix && !this.suffix) throw new Error("Simple-Discord - A prefix or a suffix is required.");
 
