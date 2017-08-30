@@ -29,7 +29,88 @@ class SimpleClient extends Client {
     constructor(options = {}) {
         super(options);
 
-        this._loadConfig(options);
+        let data;
+
+        if (options.configDir) {
+            const dir = path.isAbsolute(options.configDir) ? options.configDir : path.join(process.cwd(), options.configDir);
+
+            if (!fs.existsSync(dir)) throw new Error(`Simple-Discord - No config found at ${dir}. Is this path correct?`);
+
+            const {ext} = path.parse(dir);
+
+            if (!ext || ext !== ".json") throw new TypeError("Simple-Discord - Config file extention type is expected to be json.");
+
+            data = JSON.parse(fs.readFileSync(dir));
+        } else {
+            data = options;
+        }
+
+        this.token = data.token;
+
+        /**
+         * The commands for the bot.
+         * @type {Collection<string, Command>}
+         * @public
+         */
+        this.commands = new Collection();
+
+        /**
+         * The command aliases.
+         * @type {Collection<string, string>}
+         * @public
+         */
+        this.aliases = new Collection();
+
+        /**
+         * The command prefix.
+         * @member {string}
+         * @public
+         */
+        this.prefix = data.prefix || null;
+        
+        /**
+         * The command suffix.
+         * @member {string}
+         * @public
+         */
+        this.suffix = !this.prefix && data.suffix ? data.suffix : null;
+
+        /**
+         * The game to be set on ready.
+         * @member {string}
+         * @private
+         */
+        this._game = data.game || null;
+
+        /**
+         * An array of owner ids for the bot.
+         * @member {Array<string>}
+         * @private
+         */
+        this._owners = data.owners;
+
+        /**
+         * Boolean representation if the bot should display how to use a command when one is called improperly.
+         * @member {boolean}
+         * @private
+         */
+        this._badUseResponse = !!options.badUseResponse;
+
+        /**
+         * Boolean representation of if there should be extra logging.
+         * @member {boolean}
+         * @private
+         */
+        this._debug = !!data.debug;
+
+        /**
+         * The directory for bot commands
+         * @member {string}
+         * @private
+         */
+        this._commandsDir = data.commandsDir || null;
+
+        this._validateConfig();
 
         /**
          * General utilities.
@@ -206,97 +287,6 @@ class SimpleClient extends Client {
             this.utils.error(err);
             message.channel.send(`There was an error running the ${cmd.name} command. \`\`\`xl\n${err}\`\`\``);
         }
-    }
-
-    /**
-     * Loads configuration data.
-     * @method _loadConfig
-     * @param {SimpleClientOptions} options - The options for the client.
-     * @private
-     */
-    async _loadConfig(options) {
-        let data;
-
-        if (options.configDir) {
-            const dir = path.isAbsolute(options.configDir) ? options.configDir : path.join(process.cwd(), options.configDir);
-
-            if (!fs.existsSync(dir)) throw new Error(`Simple-Discord - No config found at ${dir}. Is this path correct?`);
-
-            const {ext} = path.parse(dir);
-
-            if (!ext || ext !== ".json") throw new TypeError("Simple-Discord - Config file extention type is expected to be json.");
-
-            data = JSON.parse(await readFile(dir));
-        } else {
-            data = options;
-        }
-
-        this.token = data.token;
-
-        /**
-         * The commands for the bot.
-         * @type {Collection<string, Command>}
-         * @public
-         */
-        this.commands = new Collection();
-
-        /**
-         * The command aliases.
-         * @type {Collection<string, string>}
-         * @public
-         */
-        this.aliases = new Collection();
-
-        /**
-         * The command prefix.
-         * @member {string}
-         * @public
-         */
-        this.prefix = data.prefix || null;
-        
-        /**
-         * The command suffix.
-         * @member {string}
-         * @public
-         */
-        this.suffix = !this.prefix && data.suffix ? data.suffix : null;
-
-        /**
-         * The game to be set on ready.
-         * @member {string}
-         * @private
-         */
-        this._game = data.game || null;
-
-        /**
-         * An array of owner ids for the bot.
-         * @member {Array<string>}
-         * @private
-         */
-        this._owners = data.owners;
-
-        /**
-         * Boolean representation if the bot should display how to use a command when one is called improperly.
-         * @member {boolean}
-         * @private
-         */
-        this._badUseResponse = !!options.badUseResponse;
-
-        /**
-         * Boolean representation of if there should be extra logging.
-         * @member {boolean}
-         * @private
-         */
-        this._debug = !!data.debug;
-
-        /**
-         * The directory for bot commands
-         * @member {string}
-         * @private
-         */
-        this._commandsDir = data.commandsDir || null;
-
-        this._validateConfig();
     }
 
     /**
