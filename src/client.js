@@ -250,7 +250,7 @@ class SimpleClient extends Client {
 
         const cmd = this.commands.get(command) || this.commands.get(this.aliases.get(command));
 
-        this.utils.log(cmd);
+        this.utils.log(command, cmd);
 
         if (!cmd) return;
         
