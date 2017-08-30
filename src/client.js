@@ -38,8 +38,6 @@ class SimpleClient extends Client {
          */
         this.utils = util;
 
-        this._validateConfig();
-
         this.once('ready', () => {
             this.utils.log(`Logged in as ${this.user.tag}!`);
             this.utils.log(`Ready to serve in ${this.guilds.size} guild${this.guilds.size === 1 ? "" : "s"}!`);
@@ -297,6 +295,8 @@ class SimpleClient extends Client {
          * @private
          */
         this._commandsDir = data.commandsDir || null;
+
+        this._validateConfig();
     }
 
     /**
