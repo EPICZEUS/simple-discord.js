@@ -61,7 +61,9 @@ class Eval extends Command {
             ending = this.endings[i];
         }
 
-        client.utils[~suffix.indexOf("ERROR") ? "error" : "log"](evaled);
+        const isError = ~suffix.indexOf("ERROR");
+
+        client.utils[isError ? "error" : "log"](evaled);
 
         if (typeof evaled !== "string") evaled = evaled instanceof Error ? evaled : inspect(evaled);
 
@@ -83,8 +85,8 @@ Evaled in ${message.guild ? `Guild **${message.guild.name}**,` : "DM with"} ${me
 ${code}
 \`\`\`
 
-### Output
-\`\`\`js
+### ${isError ? "Error" : "Output"}
+\`\`\`${isError ? "xl" : "js"}
 ${this.clean(evaled)}
 \`\`\``
                         }
@@ -95,7 +97,7 @@ ${this.clean(evaled)}
             }
             suffix += id ? `[Gist created](https://gist.github.com/${id})` : "Failed to generate gist.";
         } else {
-            suffix += `\`\`\`${~suffix.indexOf("ERROR") ? "xl" : "js"}\n${this.clean(evaled)}\n\`\`\``;
+            suffix += `\`\`\`${isError ? "xl" : "js"}\n${this.clean(evaled)}\n\`\`\``;
         }
 
         embed.setDescription(`**INPUT:** \`\`\`js\n${code}\n\`\`\`\n${suffix}`)

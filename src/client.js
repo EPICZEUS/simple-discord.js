@@ -89,7 +89,7 @@ class SimpleClient extends Client {
         this._owners = data.owners;
 
         /**
-         * Boolean representation if the bot should display how to use a command when one is called improperly.
+         * Boolean representation of if the bot should display how to use a command when one is called improperly.
          * @member {boolean}
          * @private
          */
