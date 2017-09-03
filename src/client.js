@@ -207,6 +207,7 @@ class SimpleClient extends Client {
     }
 
     /**
+     * @param {number} depth
      * @private
      * @returns {string}
      */
@@ -268,7 +269,7 @@ class SimpleClient extends Client {
             if (missing.length) return message.channel.send(`To run this command, I need the following permissions: \`\`\`\n${missing.join(", ")}\n\`\`\``);
         }
 
-        if (cmd.throttle(message.author.id)) return message.channel.send(`To run this command, you need to cool down, you're going too fast.`);
+        if (cmd.throttle(message.author.id)) return message.channel.send("To run this command, you need to cool down, you're going too fast.");
 
         const args = await this.utils.parseArgs(message, content, cmd.use);
 
